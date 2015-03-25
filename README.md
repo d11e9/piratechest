@@ -1,5 +1,7 @@
 # piratechest
 
+![PirateChest](https://raw.githubusercontent.com/d11e9/piratechest/master/public/images/logo-plus.png)
+
 Peer to peer magnet discovery.
 
 ## Development
