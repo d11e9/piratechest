@@ -1,0 +1,49 @@
+.titlebar-view {
+
+	@title-font-size: 12px;
+	@control-width: 12px;
+
+	padding: @control-width / 2;
+	border-bottom: 1px solid rgba( 255, 255, 255, 0.05 );
+	font-size: @title-font-size;
+	line-height: @title-font-size;
+	font-family: monospace;
+	color: #aaa;
+	-webkit-app-region: drag;
+	
+	.controls {
+		float: left;
+		display: inline-block;
+		vertical-align: center;
+
+		.min, .max, .close {
+			width: @control-width;
+			height: @control-width;
+			float: left;
+			font-size: 0;
+			color: transparent;
+			background-color: white;
+			border-radius: @control-width / 2;
+			margin-right: @control-width / 2;
+			cursor: pointer;
+			 -webkit-app-region: no-drag;
+
+			&.min { background-color: green; }
+			&.max { background-color: orange; }
+			&.close { background-color: red; }
+		}
+	}
+
+	.title {
+		margin: 0 auto;
+		text-align: center;
+	}
+
+	.debug {
+		-webkit-app-region: no-drag;
+		color: rgba(255, 255, 255, 0.2);
+		margin-right: 0.2em;
+		float: right;
+		cursor: pointer;
+	}
+}
