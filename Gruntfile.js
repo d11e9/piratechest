@@ -7,6 +7,7 @@ module.exports = function(grunt) {
         // specifiy what to build
         mac: true,
         win: true,
+        macIcns: 'public/images/logo.icns',
         linux32: true,
         linux64: true
       },
