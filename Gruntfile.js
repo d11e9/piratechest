@@ -8,6 +8,7 @@ module.exports = function(grunt) {
         mac: true,
         win: true,
         macIcns: 'public/images/logo.icns',
+        winIco: 'public/images/logo.ico',
         linux32: true,
         linux64: true
       },

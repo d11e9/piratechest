@@ -1,3 +1,6 @@
+
+@import 'colors';
+
 .titlebar-view {
 
 	@title-font-size: 12px;
@@ -8,7 +11,7 @@
 	font-size: @title-font-size;
 	line-height: @title-font-size;
 	font-family: monospace;
-	color: #aaa;
+	color: @text-color;
 	-webkit-app-region: drag;
 	
 	.controls {
@@ -20,17 +23,25 @@
 			width: @control-width;
 			height: @control-width;
 			float: left;
-			font-size: 0;
-			color: transparent;
+			font-size: @control-width - 2px;
+			color: rgba( 0,0,0,0.5);
 			background-color: white;
 			border-radius: @control-width / 2;
 			margin-right: @control-width / 2;
 			cursor: pointer;
 			 -webkit-app-region: no-drag;
+			line-height: @control-width  + 4px;
+			vertical-align: middle;
+			text-align: center;
 
-			&.min { background-color: green; }
-			&.max { background-color: orange; }
+			&.min { background-color: orange; }
+			&.max { background-color: green; }
 			&.close { background-color: red; }
+
+			i { display: none; }
+			&:hover i {
+				display: inline; 
+			}
 		}
 	}
 

@@ -10,18 +10,19 @@
     "url": ""
   },
   "main": "app://piratechest/index.html",
-  "node-main": "",
+  "node-main": "server.js",
   "single-instance": false,
   
   "dom_storage_quota": 1024,
   "window": {
+    "show": false,
     "title": "piratechest",
     "icon": "images/logo.png",
     "toolbar": false,
     "frame": false,
     "position": "center",
-    "width": 1024,
-    "height": 768,
+    "width": 800,
+    "height": 600,
     "min_width": 400,
     "min_height": 200,
     "resizable": true,

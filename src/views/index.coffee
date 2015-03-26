@@ -4,6 +4,7 @@
 
 
 require( './bodyView.less' )
+require( './loadingView.less' )
 
 class BodyView extends Marionette.ItemView
 	className: 'body-view'
@@ -41,6 +42,14 @@ class MagnetView extends Marionette.ItemView
 		console.log "Opening magnet uri #{ uri } externally."
 		nw.Shell.openExternal( uri )
 
+
+
+class module.exports.LoadingView extends Marionette.ItemView
+	className: 'loading-view'
+	template: _.template """
+		<img src="images/logo.png" alt="Pirate Chest" />
+		<p>Loading...</p>
+	"""
 
 class module.exports.AppView extends Marionette.LayoutView
 	className: 'app-view'

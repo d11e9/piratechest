@@ -6,9 +6,15 @@ class module.exports.TitlebarView extends Marionette.ItemView
     className: 'titlebar-view'
     template: _.template """
         <div class="controls">
-            <div class="close">Close</div>
-            <div class="max">Fullscreen</div>
-            <div class="min">Minimize</div>
+            <div class="close">
+                <i class="icon-remove"></i>
+            </div>
+            <div class="min">
+                <i class="icon-minus"></i>
+            </div>
+            <div class="max">
+                <i class="icon-plus"></i>
+            </div>
         </div>
         <div class="debug">
             <i class="icon-cogs"></i>
@@ -23,9 +29,11 @@ class module.exports.TitlebarView extends Marionette.ItemView
 
     handleMinify: ->
         console.log 'Minify App'
+        window.win.get().minimize()
 
     handleFullscreen: ->
         console.log 'Fullscreen App'
+        window.win.get().toggleFullscreen()
 
     handleClose: ->
         console.log 'Close App'
