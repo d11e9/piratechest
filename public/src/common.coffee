@@ -1,3 +1,4 @@
+global.document = window.document
 
 _ = require 'underscore'
 $ = require 'jquery'

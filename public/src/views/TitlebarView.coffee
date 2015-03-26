@@ -1,6 +1,6 @@
-{ _, Marionette } = require '../common.coffee'
 
-require( './titlebarView.less' )
+{ _, $, Backbone, Marionette } = require( '../common.coffee' )
+{ nw, win } = window.nwin
 
 class module.exports.TitlebarView extends Marionette.ItemView
     className: 'titlebar-view'
@@ -29,16 +29,16 @@ class module.exports.TitlebarView extends Marionette.ItemView
 
     handleMinify: ->
         console.log 'Minify App'
-        window.win.get().minimize()
+        win.minimize()
 
     handleFullscreen: ->
         console.log 'Fullscreen App'
-        window.win.get().toggleFullscreen()
+        win.toggleFullscreen()
 
     handleClose: ->
         console.log 'Close App'
-        window.close()
+        win.close()
 
     handleDebug: ->
         console.log 'Debug App'
-        window.win.get().showDevTools()
+        win.showDevTools()

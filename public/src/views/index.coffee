@@ -1,10 +1,9 @@
-{ _, $, Backbone, Marionette } = require '../common.coffee'
 
+{_, $, Backbone, Marionette } = require( '../common.coffee' )
 { TitlebarView  } = require './TitlebarView.coffee'
 
+gm = require( '../lib/gossip.js')
 
-require( './bodyView.less' )
-require( './loadingView.less' )
 
 class BodyView extends Marionette.ItemView
 	className: 'body-view'
@@ -19,12 +18,21 @@ class BodyView extends Marionette.ItemView
 		input: '.add-new input'
 
 	events:
-		'click .add-new button': 'addMagnet'
+		'click .add-new button': ->
+			hash = @ui.input.val()
+			gm.update( hash, 1 )
+			@addMagnet( hash )
+			@ui.input.val( '' )
 
-	addMagnet: ->
-		hash = @ui.input.val()
+	onShow: ->
+		gm.on 'update', @handleUpdate
+
+	handleUpdate: (id, key, value) => @addMagnet(key)
+
+	addMagnet: (hash)->
 		magnet = new Backbone.Model( infoHash: hash )
 		magnetView = new MagnetView( model: magnet )
+		console.log gm
 		@ui.magnets.append( magnetView.render().el )
 
 class MagnetView extends Marionette.ItemView
@@ -62,9 +70,6 @@ class module.exports.AppView extends Marionette.LayoutView
 		header: '.header'
 		body: '.body'
 		footer: '.footer'
-
-	initialize: ->
-		require( './appView.less' )
 
 	onShow: ->
 		@header.show( new TitlebarView() )
