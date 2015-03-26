@@ -13,7 +13,7 @@ class module.exports.ContentsView extends OverlayView
 				<p>The stash of loadstones is only slightly crumbling with age and wear. The fragments are very good for detecting magnetic fields.</p>
 				<p>Use them in your search for magnets.</p>
 
-				<button>Ok</button>
+				<button class="button">Ok</button>
 			</div>
 		</div>
 	"""

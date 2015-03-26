@@ -6,11 +6,11 @@ class module.exports.IntroView extends OverlayView
 		<div class="overlay intro">
 			<div class="content">
 				<p class="welcome">It would seem you have found a pirate chest.</p>
-				<img src="images/logo.png" alt="">
+				<img src="images/logo-lrg.png" alt="">
 				<code>
 					<pre>DISCLAIMER</pre>
 				</code>
-				<button>Open</button>
+				<button class="button">Open</button>
 			</div>
 		</div>
 	"""
