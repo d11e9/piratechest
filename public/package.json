@@ -32,7 +32,9 @@
     "backbone.marionette": "^2.4.1",
     "coffee-script": "^1.9.1",
     "gossipmonger": "^0.1.10",
+    "hashcashgen": "^1.0.1",
     "jquery": "^2.1.3",
-    "underscore": "^1.8.2"
+    "underscore": "^1.8.2",
+    "webtorrent": "^0.30.0"
   }
 }
