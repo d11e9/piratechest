@@ -2,6 +2,7 @@
 {_, $, Backbone, Marionette } = require( '../common.coffee' )
 { TitlebarView  } = require './TitlebarView.coffee'
 
+
 # gm = require( '../lib/gossip.js')
 # hashcash = window.hc = require( 'hashcashgen')
 
@@ -100,9 +101,10 @@ class AppView extends Marionette.LayoutView
         @header.show( new TitlebarView() )
         @body.show( new BodyView( collection: @collection ) )
 
-        overlay = new OverlayView()
-        overlay.on 'close', => @overlay.empty()
-        @overlay.show( overlay )
+    showOverlay: (view) ->
+        view.on 'close', => @overlay.empty()
+        @overlay.show( view )
 
 
-module.exports = { AppView, LoadingView }
+module.exports = { AppView, LoadingView, OverlayView }
+
