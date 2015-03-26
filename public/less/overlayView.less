@@ -1,0 +1,23 @@
+@import 'layoutValues';
+
+.overlay-view {
+    
+    .overlay {
+        background-color: rgba( 0,0,0, 0.5 );
+        position: absolute;
+        bottom: 0;
+        top: @title-bar-height;
+        left: 0;
+        right: 0;
+
+        .content {
+            margin: auto;
+            margin-top: 5em;
+            max-width: 30em;
+            background-color: white;
+            color: black;
+            padding: 1em;
+            box-shadow: 0 0 1em #000;
+        }
+    }
+}

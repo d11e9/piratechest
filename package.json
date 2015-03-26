@@ -11,7 +11,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "compile": "watchify --no-detect-globals --bare -t lessify -t coffeeify src/app.coffee -o public/js/app.js",
     "app": "nodewebkit public",
-    "build": "grunt"
+    "build": "grunt",
+    "server": "node public/src/lib/gossip.js 9001"
   },
   "author": "d11e9",
   "license": "NONE YET",

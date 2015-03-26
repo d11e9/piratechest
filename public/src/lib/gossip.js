@@ -5,11 +5,19 @@ rand = function(min,max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-PORT = rand( 9000, 10000)
-console.log( 'chatting on port ', PORT );
+var PORT = parseInt( process.argv[2] ) || rand( 9002, 10000);
+console.log( 'Gossiping on port ', PORT );
 
-SEED = 9001
-seeds = SEED ? [{id: "seed1", transport: { host: 'localhost', port: SEED }}] : [];
+var SEED = PORT == 9001 ? false : 9001;
+var seeds = []
+
+if (SEED) {
+    console.log( "Using seed at port: ", SEED )
+    seeds = [{id: "seed1", transport: { host: 'localhost', port: SEED }}];
+} else {
+    console.log( 'No seeds, waiting for connections.')
+}
+
  
 var gossipmonger = new Gossipmonger(
     { // peerInfo 
@@ -40,7 +48,8 @@ gossipmonger.on('peer live', function (livePeer) {
 });
  
 gossipmonger.on('update', function (peerId, key, value) {
-    console.log("peer " + peerId + " updated key " + key + " with " + value);  
+    console.log("peer " + peerId + " updated key " + key + " with " + value);
+    gossipmonger.update( key, value ) 
     console.log( gossipmonger.localPeer.data )
 });
  
@@ -58,5 +67,10 @@ gossipmonger.transport.listen(function () {
 });
  
 gossipmonger.gossip(); // start gossiping 
+
+
+if (!SEED) {
+    gossipmonger.update( "ThisHashDoesNotHaveProofOfWork", 'ThisHashDoesNotHaveProofOfWork:1123' )
+}
 
 module.exports = gossipmonger;

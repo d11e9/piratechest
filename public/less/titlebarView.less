@@ -1,12 +1,13 @@
 
 @import 'colors';
+@import 'layoutValues';
 
 .titlebar-view {
 
 	@title-font-size: 12px;
 	@control-width: 12px;
 
-	padding: @control-width / 2;
+	padding: ( @title-bar-height - @control-width ) / 2;
 	border-bottom: 1px solid rgba( 255, 255, 255, 0.05 );
 	font-size: @title-font-size;
 	line-height: @title-font-size;

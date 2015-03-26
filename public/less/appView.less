@@ -1,14 +1,9 @@
 
 @import "colors";
+@import 'layoutValues';
 
 @title-height: 15px;
 
-
-.full-width () {
-    position: absolute;
-    left: 0;
-    right: 0;
-}
 
 .app-view {
     width: 100vw;
@@ -16,5 +11,8 @@
     background-color: @bg-color;
     border: 2px solid @border-color;
     box-sizing: border-box;
-    position: relative;
+
+    .header {
+        height: @title-bar-height;
+    }
 }
