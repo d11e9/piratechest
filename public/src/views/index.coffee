@@ -1,16 +1,19 @@
 
 {_, $, Backbone, Marionette } = require( '../common.coffee' )
+{ nw, win } = window.nwin
 
 { Magnet } = require '../models/models.coffee'
 
 { TitlebarView  } = require './TitlebarView.coffee'
 { MenuView  } = require './MenuView.coffee'
-{ nw, win } = window.nwin
+{ LodestoneView  } = require './LodestoneView.coffee'
+{ CardsView  } = require './CardsView.coffee'
+{ DetailsView  } = require './DetailsView.coffee'
 
 class MagnetView extends Marionette.ItemView
     className: 'magnet-view'
     template: _.template """
-        <i data-title="More Infomation" class="icon-collapse"></i>
+        <i data-title="More Infomation" class="details icon-collapse"></i>
         <span class="infoHash"><%- infoHash %></span>
         <i data-title="Toggle Favorite" class="icon-heart favorite <%= favorite ? 'fav' : '' %>"></i>
         <i data-title="Torrent Status" class="icon-circle-blank"></i>
@@ -19,6 +22,8 @@ class MagnetView extends Marionette.ItemView
     events:
         'click a': 'handleMagnetClick'
         'click .favorite': 'toggleFav'
+        'click .infoHash': 'handleShowDetails'
+        'click .details': 'handleShowDetails'
 
     toggleFav: ->
         @model.set( 'favorite', !@model.get( 'favorite') )
@@ -32,26 +37,40 @@ class MagnetView extends Marionette.ItemView
         console.log "Opening magnet uri #{ uri } externally."
         nw.Shell.openExternal( uri )
 
+    handleShowDetails: ->
+        @trigger( 'show:details', @model )
+
 class MagnetCollectionView extends Marionette.CollectionView
     childView: MagnetView
+    childEvents:
+        'show:details': 'handleShowDetails'
 
-class BodyView extends Marionette.ItemView
+    handleShowDetails: (view, magnet) ->
+        @trigger( 'show:details', magnet )
+
+class BodyView extends Marionette.LayoutView
     className: 'body-view'
     template: _.template """
         <form class="add-new">
             Add new magnet <input placeholder="infoHash" type="text" class="infoHash"/> <button><i class="icon-plus"></i></button>
         </form>
-        <div class="magnets"></div>
+        <div class="magnets-region"></div>
+        <div class="details-region"></div>
     """
     ui:
-        magnets: '.magnets'
         input: '.add-new input'
+    
+    regions:
+        magnets: '.magnets-region'
+        details: '.details-region'
 
     events:
         'submit form': 'handleAddMagnet'
         'click .add-new button': 'handleAddMagnet' 
     
     initialize: ({@collection}) ->
+        @collectionView = new MagnetCollectionView( collection: @collection )
+        @listenTo @collectionView, 'show:details', @handleShowDetails
 
     handleAddMagnet: (ev) ->
         ev.preventDefault()
@@ -61,13 +80,13 @@ class BodyView extends Marionette.ItemView
         @collection.add( magnet )
         @ui.input.val( '' )
 
-    onShow: =>
-        @magnets = new Marionette.Region( el: @ui.magnets.get(0) )
-        @magnets.show( new MagnetCollectionView( collection: @collection ) )
+    onShow: ->
+        @magnets.show( @collectionView )
 
-
-
-
+    handleShowDetails: (magnet) ->
+        detailsView = new DetailsView( model: magnet )
+        @details.show( detailsView )
+        detailsView.on 'close', => @details.empty()
 
 class LoadingView extends Marionette.ItemView
     className: 'loading-view'
@@ -103,12 +122,12 @@ class AppView extends Marionette.LayoutView
         <div class="header"></div>
         <div class="menu"></div>
         <div class="overlay"></div>
-        <div class="body"></div>
+        <div class="body-region"></div>
     """
     regions:
         header: '.header'
         menu: '.menu'
-        body: '.body'
+        body: '.body-region'
         overlay: '.overlay'
 
     initialize: ({@collection}) ->
@@ -123,6 +142,8 @@ class AppView extends Marionette.LayoutView
     handleShowMenuItem: (item) ->
         switch item
             when 'collection' then @body.show( new BodyView( collection: @collection ) )
+            when 'search' then @body.show( new LodestoneView() )
+            when 'cards' then @body.show( new CardsView() )
             else @body.empty()
 
     showOverlay: (view) ->

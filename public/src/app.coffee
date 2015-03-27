@@ -8,9 +8,9 @@ fs = require('fs')
 { nw, win } = window.nwin
 
 # Auto reload on filesystem changes TODO: fix this
-fs.watch './', ->
-	console.log "Filesystem change detected, reloading."
-	window.location.reload() if window.location
+# fs.watch './', ->
+# 	console.log "Filesystem change detected, reloading."
+# 	window.location.reload() if window.location
 
 
 magnetCollection = new MagnetCollection()

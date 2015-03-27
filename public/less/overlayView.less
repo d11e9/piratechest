@@ -6,10 +6,11 @@
     .overlay {
         background-color: rgba( 0,0,0, 0.5 );
         position: absolute;
-        bottom: 0;
+        z-index: 99999;
         top: @title-bar-height;
-        left: 0;
-        right: 0;
+        bottom: @app-border-width;
+        left: @app-border-width;
+        right: @app-border-width;
 
         .content {
             margin: auto;

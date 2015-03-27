@@ -1,0 +1,26 @@
+@import 'colors';
+@import 'layoutValues';
+
+.details-region {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	background-color: @bg-color;
+
+	.details-view {
+		box-sizing: border-box;
+		height: 100%;
+		width: 30em;
+		padding: 1em;
+		box-shadow: -5px 3px 5px rgba( 0,0,0, 0.25);
+		border-left: 1px solid @border-color;
+		border-top: 1px solid @border-color;
+
+		.close {
+			padding: 0.4em;
+			float: right;
+			cursor: pointer;
+		}
+	}
+}

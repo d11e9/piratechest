@@ -14,7 +14,6 @@ class MagnetCollection extends Backbone.Collection
 		@listenTo gm, 'update', @handleGossipUpdate
 		@listenTo this, 'add', @handleCollectionAdd
 
-
 	handleCollectionAdd: (model) ->
 		hash = model.get('infoHash')
 		gm.update( hash, hashcash( hash, 4 ) )

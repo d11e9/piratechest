@@ -9,10 +9,21 @@
     width: 100vw;
     height: 100vh;
     background-color: @bg-color;
-    border: 2px solid @border-color;
+    border: @app-border-width solid @border-color;
     box-sizing: border-box;
 
     .header {
         height: @title-bar-height;
+    }
+
+    .body-region {
+    	background-color: @body-bg-color;
+    	position: absolute;
+		height: auto;
+		top: @app-header-height;
+		bottom: @app-border-width;
+		box-sizing: border-box;
+		left: @app-border-width;
+		right: @app-border-width;
     }
 }
