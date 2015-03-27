@@ -24,7 +24,7 @@ class MagnetCollection extends Backbone.Collection
 			magnet = new Magnet
 				infoHash: key
 				favorite: false
-			@add( magnet ) unless @contains( magnet )
+			@add( magnet ) unless @where( infoHash: key ).length > 0
 		else
 			console.log "Gossip hash with invalid hashcash stamp.", key, value
 
