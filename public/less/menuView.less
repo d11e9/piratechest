@@ -1,0 +1,64 @@
+@import 'layoutValues';
+@import 'colors';
+
+.menu-view {
+    ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        overflow: auto;
+        border-bottom: 1px solid @border-color;
+    }
+
+    li {
+        float: left;
+        padding: 1em 2em;
+        min-width: 12em;
+        line-height: 2em;
+        border-right: 1px solid @border-color;
+        vertical-align: middle;
+        cursor: pointer;
+
+        i {
+            margin-right: 1em;
+        }
+
+        &.active {
+            color: @text-selected-color;
+            background-color: @border-color;
+        }
+
+        &:hover {
+            color: @text-selected-color;
+        }
+
+        &:last-child {
+            border-right: 0 none;
+        }
+
+        form {
+            display: inline-block;
+        }
+    }
+
+
+    .search input {
+        color: @text-color;
+        background-color: transparent;
+        padding: 0.4em;
+        border: 0 none;
+        border-bottom: 1px solid @border-color;
+        outline: 0 none;
+        vertical-align: bottom;
+        font-family: monospace;
+        font-size: inherit;
+
+        &:focus {
+            color: @text-selected-color;
+            border-color: @text-color;
+        }
+    }
+}
+
+
+

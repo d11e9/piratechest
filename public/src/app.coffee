@@ -29,6 +29,6 @@ $ ->
 			
 	), 1000
 	win.show()
-	setTimeout ( -> magnetCollection.add( infoHash: 'sdfsdfsdfsdfsdfsdf' ) ), 10000
+	setTimeout ( -> magnetCollection.add( infoHash: '546cf15f724d19c4319cc17b179d7e035f89c1f4', favorite: true ) ), 10000
 
 

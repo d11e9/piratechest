@@ -1,19 +1,29 @@
 
 {_, $, Backbone, Marionette } = require( '../common.coffee' )
+
+{ Magnet } = require '../models/models.coffee'
+
 { TitlebarView  } = require './TitlebarView.coffee'
-
-
-# gm = require( '../lib/gossip.js')
-# hashcash = window.hc = require( 'hashcashgen')
-
+{ MenuView  } = require './MenuView.coffee'
+{ nw, win } = window.nwin
 
 class MagnetView extends Marionette.ItemView
-    className: 'magnet'
+    className: 'magnet-view'
     template: _.template """
-        <span class="infoHash"><%- infoHash %></span><a href="magnet:?xt=urn:btih:<%- infoHash %>"><i class="icon-magnet"></a></i>
+        <i data-title="More Infomation" class="icon-collapse"></i>
+        <span class="infoHash"><%- infoHash %></span>
+        <i data-title="Toggle Favorite" class="icon-heart favorite <%= favorite ? 'fav' : '' %>"></i>
+        <i data-title="Torrent Status" class="icon-circle-blank"></i>
+        <a href="magnet:?xt=urn:btih:<%- infoHash %>"><i data-title="Magnet Link" class="icon-magnet"></i></a>
     """
     events:
         'click a': 'handleMagnetClick'
+        'click .favorite': 'toggleFav'
+
+    toggleFav: ->
+        @model.set( 'favorite', !@model.get( 'favorite') )
+        @render()
+
     getMagnetUri: ->
         "magnet:?xt=urn:btih:#{ @model.get( 'infoHash' ) }"
 
@@ -45,7 +55,10 @@ class BodyView extends Marionette.ItemView
 
     handleAddMagnet: (ev) ->
         ev.preventDefault()
-        @collection.add( infoHash: @ui.input.val() )
+        magnet = new Magnet
+            infoHash: @ui.input.val()
+            favorite: false
+        @collection.add( magnet )
         @ui.input.val( '' )
 
     onShow: =>
@@ -88,18 +101,29 @@ class AppView extends Marionette.LayoutView
     className: 'app-view'
     template: _.template """
         <div class="header"></div>
+        <div class="menu"></div>
         <div class="overlay"></div>
         <div class="body"></div>
     """
     regions:
         header: '.header'
+        menu: '.menu'
         body: '.body'
         overlay: '.overlay'
 
     initialize: ({@collection}) ->
+        @menuView = new MenuView()
+        @listenTo @menuView, 'show:menuItem', @handleShowMenuItem
+
     onShow: ->
         @header.show( new TitlebarView() )
+        @menu.show( @menuView )
         @body.show( new BodyView( collection: @collection ) )
+
+    handleShowMenuItem: (item) ->
+        switch item
+            when 'collection' then @body.show( new BodyView( collection: @collection ) )
+            else @body.empty()
 
     showOverlay: (view) ->
         view.on 'close', => @overlay.empty()
