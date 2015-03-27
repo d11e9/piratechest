@@ -6,24 +6,28 @@
 
 
 .app-view {
-    width: 100vw;
-    height: 100vh;
     background-color: @bg-color;
     border: @app-border-width solid @border-color;
     box-sizing: border-box;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
 
     .header {
         height: @title-bar-height;
     }
 
     .body-region {
+    	overflow: auto;
     	background-color: @body-bg-color;
     	position: absolute;
 		height: auto;
-		top: @app-header-height;
-		bottom: @app-border-width;
 		box-sizing: border-box;
-		left: @app-border-width;
-		right: @app-border-width;
+		top: @app-header-height;
+		bottom: 0;
+		left: 0;
+		right: 0;
     }
 }

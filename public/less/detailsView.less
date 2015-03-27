@@ -6,16 +6,23 @@
 	top: 0;
 	right: 0;
 	bottom: 0;
-	background-color: @bg-color;
+	background-color: @bg-light-color;
+	color: @text-dark-color;
 
 	.details-view {
 		box-sizing: border-box;
 		height: 100%;
 		width: 30em;
-		padding: 1em;
-		box-shadow: -5px 3px 5px rgba( 0,0,0, 0.25);
-		border-left: 1px solid @border-color;
-		border-top: 1px solid @border-color;
+		padding: 1em 1em 1em 2em;
+		box-shadow: inset 5px 0px 10px rgba( 0,0,0, 0.25);
+		overflow-y: auto;
+		overflow-x: hidden;
+
+		white-space: -webkit-pre-wrap;
+		color: @text-dark-color;
+		word-wrap: break-word;
+		word-break: break-all;
+		white-space: normal;
 
 		.close {
 			padding: 0.4em;

@@ -12,8 +12,10 @@ class module.exports.MenuView extends Marionette.LayoutView
 					<form action="">
 						<i class="icon-search"></i>
 						Lodestone
-						<input placeholder="Search" type="text"></li>
+						<input placeholder="Search" type="text">
 					</form>
+				</li>
+				<li class="settings" data-item="settings"><i class="icon-cog"></i></li>
 			</ul>
 		</div>
 	"""

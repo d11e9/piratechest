@@ -6,7 +6,7 @@ class module.exports.ContentsView extends OverlayView
 		<div class="overlay contents">
 			<div class="content">
 
-				<img src="images/lodestones.png" alt="">
+				<img src="images/lodestones.svg" alt="">
 				<p class="welcome">Inside you find a stash of <strong>Loadstones</strong> and a mysterious set of <strong>blank playing cards</strong> otherwise the box is empty save for a small <strong>note</strong>.</p>
 
 				<code class="note">Note: This chest has been especiallly crafted to hold magnets. Long live The Pirate Bay.</code>

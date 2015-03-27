@@ -4,8 +4,11 @@ fs = require('fs')
 { AppView, LoadingView } = require( './views/index.coffee' )
 { IntroView } = require './views/IntroView.coffee'
 { ContentsView } = require './views/ContentsView.coffee'
-{ MagnetCollection } = require( './models/models.coffee' )
+{ MagnetCollection, Magnet } = require( './models/models.coffee' )
 { nw, win } = window.nwin
+
+WebTorrent = require 'webtorrent'
+client = new WebTorrent()
 
 # Auto reload on filesystem changes TODO: fix this
 # fs.watch './', ->
@@ -29,6 +32,12 @@ $ ->
 			
 	), 1000
 	win.show()
-	setTimeout ( -> magnetCollection.add( infoHash: '546cf15f724d19c4319cc17b179d7e035f89c1f4', favorite: true ) ), 10000
+	setTimeout ( -> 
+		magnetCollection.add new Magnet
+			infoHash: '546cf15f724d19c4319cc17b179d7e035f89c1f4'
+			favorite: true
+		magnetCollection.add new Magnet
+			infoHash: 'b3bcb8bd8b20dec7a30fd9ec43ce7afaaf631e06'
+	), 10000
 
 

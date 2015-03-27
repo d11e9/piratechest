@@ -11,6 +11,9 @@ class module.exports.DetailsView extends Marionette.ItemView
         	<li>Info Hash: <%- infoHash %></li>
         	<li>Favorite: <%- favorite %></li>
         	<li>Status: 34/999</li>
+            <li>
+                <a class="uri" href="<%- uri %>"><%- uri %></a>
+            </li>
         	<li>
         		Tags:
         		<ol>
@@ -22,6 +25,9 @@ class module.exports.DetailsView extends Marionette.ItemView
     """
     events:
     	'click .close': 'handleClose'
+
+    initialize: ->
+        @listenTo @model, 'change', @render
 
     handleClose: ->
     	@trigger( 'close' )

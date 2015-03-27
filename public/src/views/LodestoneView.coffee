@@ -6,7 +6,7 @@ class module.exports.LodestoneView extends Marionette.LayoutView
 	template: _.template """
 		<div class="content">
 
-			<img src="images/lodestones.png" alt="">
+			<img src="images/lodestones.svg" alt="">
 			<p><strong>Lodestone Search</strong> is a <em>work in progress</em> private distributed search engine for magnets.</p>
 		</div>
 	"""

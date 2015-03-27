@@ -1,13 +1,16 @@
 {_, $, Backbone, Marionette } = require( '../common.coffee' )
  
 hashcash = window.hc = require( 'hashcashgen')
+magnetUri = require( 'magnet-uri' )
 gm = require( '../lib/gossip.js')
 
-class Magnet extends Backbone.Model
-	defaults: ->
-		favorite: false
+class Magnet extends Backbone.Model	
+	initialize: ({@infoHash, favorite, title, tags}) ->
+		@set 'favorite', if favorite then true else false
+		@set 'uri', @getUri()
 
-	getUri: -> "magnet:?"
+	getUri: -> magnetUri.encode
+		infoHash: @get('infoHash')
 
 class MagnetCollection extends Backbone.Collection
 	initialize: ->

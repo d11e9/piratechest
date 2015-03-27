@@ -17,7 +17,7 @@ class module.exports.TitlebarView extends Marionette.ItemView
             </div>
         </div>
         <div class="debug">
-            <i class="icon-cogs"></i>
+            <i class="icon-code"></i>
         </div>
         <div class="title">Pirate Chest</div>
     """

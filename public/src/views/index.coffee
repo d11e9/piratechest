@@ -5,9 +5,12 @@
 { Magnet } = require '../models/models.coffee'
 
 { TitlebarView  } = require './TitlebarView.coffee'
+
 { MenuView  } = require './MenuView.coffee'
 { LodestoneView  } = require './LodestoneView.coffee'
 { CardsView  } = require './CardsView.coffee'
+{ SettingsView  } = require './SettingsView.coffee'
+
 { DetailsView  } = require './DetailsView.coffee'
 
 class MagnetView extends Marionette.ItemView
@@ -17,7 +20,7 @@ class MagnetView extends Marionette.ItemView
         <span class="infoHash"><%- infoHash %></span>
         <i data-title="Toggle Favorite" class="icon-heart favorite <%= favorite ? 'fav' : '' %>"></i>
         <i data-title="Torrent Status" class="icon-circle-blank"></i>
-        <a href="magnet:?xt=urn:btih:<%- infoHash %>"><i data-title="Magnet Link" class="icon-magnet"></i></a>
+        <a href="<%- uri %>"><i data-title="Magnet Link" class="icon-magnet"></i></a>
     """
     events:
         'click a': 'handleMagnetClick'
@@ -27,15 +30,11 @@ class MagnetView extends Marionette.ItemView
 
     toggleFav: ->
         @model.set( 'favorite', !@model.get( 'favorite') )
-        @render()
-
-    getMagnetUri: ->
-        "magnet:?xt=urn:btih:#{ @model.get( 'infoHash' ) }"
 
     handleMagnetClick: (ev) =>
-        uri = @getMagnetUri()
-        console.log "Opening magnet uri #{ uri } externally."
-        nw.Shell.openExternal( uri )
+        ev.preventDefault()
+        nw.Shell.openExternal( @model.get( 'uri' ) )
+        false
 
     handleShowDetails: ->
         @trigger( 'show:details', @model )
@@ -144,6 +143,7 @@ class AppView extends Marionette.LayoutView
             when 'collection' then @body.show( new BodyView( collection: @collection ) )
             when 'search' then @body.show( new LodestoneView() )
             when 'cards' then @body.show( new CardsView() )
+            when 'settings' then @body.show( new SettingsView() )
             else @body.empty()
 
     showOverlay: (view) ->

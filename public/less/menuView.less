@@ -2,7 +2,11 @@
 @import 'colors';
 
 .menu-view {
+
+    overflow: hidden;
+
     ul {
+        min-width: 841px;
         margin: 0;
         padding: 0;
         list-style: none;
@@ -31,30 +35,33 @@
             color: @text-selected-color;
         }
 
-        &:last-child {
-            border-right: 0 none;
+        &.search {
+
+            form {
+                display: inline-block;
+            }
+
+            input {
+                color: @text-color;
+                background-color: transparent;
+                padding: 0.4em;
+                border: 0 none;
+                border-bottom: 1px solid @border-color;
+                outline: 0 none;
+                vertical-align: bottom;
+                font-family: monospace;
+                font-size: inherit;
+
+                &:focus {
+                    color: @text-selected-color;
+                    border-color: @text-color;
+                }
+            }
         }
 
-        form {
-            display: inline-block;
-        }
-    }
-
-
-    .search input {
-        color: @text-color;
-        background-color: transparent;
-        padding: 0.4em;
-        border: 0 none;
-        border-bottom: 1px solid @border-color;
-        outline: 0 none;
-        vertical-align: bottom;
-        font-family: monospace;
-        font-size: inherit;
-
-        &:focus {
-            color: @text-selected-color;
-            border-color: @text-color;
+        &.settings {
+            min-width: 0;
+            padding-right: 1em;
         }
     }
 }
