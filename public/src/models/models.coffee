@@ -12,6 +12,12 @@ class Magnet extends Backbone.Model
 class MagnetCollection extends Backbone.Collection
 	initialize: ->
 		@listenTo gm, 'update', @handleGossipUpdate
+		@listenTo this, 'add', @handleCollectionAdd
+
+
+	handleCollectionAdd: (model) ->
+		hash = model.get('infoHash')
+		gm.update( hash, hashcash( hash, 4 ) )
 
 	handleGossipUpdate: (peerId, key, value) =>
 		if hashcash.check( key, value )

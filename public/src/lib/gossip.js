@@ -71,6 +71,7 @@ gossipmonger.gossip(); // start gossiping
 
 if (!SEED) {
     gossipmonger.update( "ThisHashDoesNotHaveProofOfWork", 'ThisHashDoesNotHaveProofOfWork:1123' )
+    gossipmonger.update( "ThisGoodHashDoesHaveProofOfWork", 'ThisGoodHashDoesHaveProofOfWork:2963' )
 }
 
 module.exports = gossipmonger;
