@@ -5,7 +5,11 @@ fs = require('fs')
 { IntroView } = require './views/IntroView.coffee'
 { ContentsView } = require './views/ContentsView.coffee'
 { MagnetCollection, Magnet } = require( './models/models.coffee' )
+
 { nw, win } = window.nwin
+nativeMenuBar = new nw.Menu( type: "menubar" )
+nativeMenuBar.createMacBuiltin("Pirate Chest") if process.platform is 'darwin'
+win.menu = nativeMenuBar;
 
 gm = require( './lib/gossip.js')
 WebTorrent = require 'webtorrent'
@@ -14,8 +18,7 @@ client = new WebTorrent()
 magnetCollection = new MagnetCollection( [], torrentClient: client, gm: gm )
 
 # Use The Map, to find bootstrap/seed peers.
-console.log "__dirname: #{ __dirname } "
-client.seed "#{ __dirname }/../images/map.svg", { name: 'Piratechest Seed Map', comment: 'This map is designed to be seeded as a torrent by the piratechest application in order to bootstrap peer discovery.' }, (torrent) ->
+client.seed "#{ __dirname }/../images/map.svg", { name: 'PiratechestSeedMap.svg', comment: 'This map is designed to be seeded as a torrent by the piratechest application in order to bootstrap peer discovery.' }, (torrent) ->
     console.log "Seeding the map. Stored at: window.seedMap"
     window.seedMap = torrent
 
@@ -34,10 +37,12 @@ $ ->
             
     ), 1000
     win.show()
+
+    # test magnet TODO: Remove this.
     setTimeout ( -> 
         magnetCollection.add new Magnet
             infoHash: '546cf15f724d19c4319cc17b179d7e035f89c1f4'
             favorite: false
-    ), 10000
+    ), 3000
 
 

@@ -23,7 +23,6 @@ To get the source code check it out from github and install its dependencies lik
 
 To run the application from source once its installed do the following:
 
-	npm run compile
 	npm run app
 
 ## Build
