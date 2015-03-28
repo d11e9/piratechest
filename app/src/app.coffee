@@ -37,9 +37,7 @@ $ ->
     setTimeout ( -> 
         magnetCollection.add new Magnet
             infoHash: '546cf15f724d19c4319cc17b179d7e035f89c1f4'
-            favorite: true
-        magnetCollection.add new Magnet
-            infoHash: 'b3bcb8bd8b20dec7a30fd9ec43ce7afaaf631e06'
+            favorite: false
     ), 10000
 
 

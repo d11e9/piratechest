@@ -1,18 +1,18 @@
 module.exports = function(grunt) {
   grunt.initConfig({
-    pkg: grunt.file.readJSON('public/package.json'),
+    pkg: grunt.file.readJSON('app/package.json'),
     nodewebkit: {
       options: {
         build_dir: './dist',
         // specifiy what to build
         mac: true,
         win: true,
-        macIcns: 'public/images/logo.icns',
-        winIco: 'public/images/logo.ico',
+        macIcns: 'app/images/logo.icns',
+        winIco: 'app/images/logo.ico',
         linux32: true,
         linux64: true
       },
-      src: './public/**/*'
+      src: './app/**/*'
     },
   });
 
