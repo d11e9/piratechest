@@ -15,7 +15,7 @@ To get the source code check it out from github and install its dependencies lik
 
     # Node modules need to be installed in two locations
     npm install
-    cd public
+    cd app
     npm install
     cd ..
 
