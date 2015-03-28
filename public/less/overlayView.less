@@ -4,7 +4,7 @@
 .overlay-view {
     
     .overlay {
-        background-color: rgba( 0,0,0, 0.5 );
+        background-color: rgba( 0,0,0, 0.2 );
         position: absolute;
         z-index: 99999;
         top: @title-bar-height;
@@ -19,7 +19,7 @@
             background-color: white;
             color: black;
             padding: 1em;
-            box-shadow: 0 0 1em #000;
+            box-shadow: 0 0 40px 10px #000;
         }
 
         &.intro {
@@ -38,20 +38,15 @@
             .content {
                 text-align: center;
 
-                .note {
-                    background-color: rgb(249, 249,197);
-                    padding: 1em;
-                    display: block;
-                    font-size: 16px;
-                    margin: 2em 1em;
-                    text-align: left;
-                }
-
                 img {
                     display: block;
-                    margin: 0 auto;
                     margin: 2em auto;
+
+                    &.note {
+                        width: 20em;
+                    }
                 }
+
             }
         }
     }

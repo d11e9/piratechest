@@ -11,13 +11,14 @@ gm = require( './lib/gossip.js')
 WebTorrent = require 'webtorrent'
 client = new WebTorrent()
 
-# Auto reload on filesystem changes TODO: fix this
-# fs.watch './', ->
-#   console.log "Filesystem change detected, reloading."
-#   window.location.reload() if window.location
-
-
 magnetCollection = new MagnetCollection( [], torrentClient: client, gm: gm )
+
+# Use The Map, to find bootstrap/seed peers.
+console.log "__dirname: #{ __dirname } "
+client.seed "#{ __dirname }/../images/map.svg", { name: 'Piratechest Seed Map', comment: 'This map is designed to be seeded as a torrent by the piratechest application in order to bootstrap peer discovery.' }, (torrent) ->
+    console.log "Seeding the map. Stored at: window.seedMap"
+    window.seedMap = torrent
+
 
 $ ->
     appRegion = new Marionette.Region( el: $('body').get(0) )

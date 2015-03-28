@@ -6,7 +6,7 @@ class module.exports.IntroView extends OverlayView
 		<div class="overlay intro">
 			<div class="content">
 				<p class="welcome">It would seem you have found a pirate chest.</p>
-				<img src="images/logo-lrg.png" alt="">
+				<img src="images/logo.svg" alt="">
 				<code>
 					<pre>DISCLAIMER</pre>
 				</code>
