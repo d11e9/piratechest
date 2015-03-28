@@ -17,23 +17,26 @@ class MagnetView extends Marionette.ItemView
     className: 'magnet-view'
     template: _.template """
         <i data-title="More Infomation" class="details icon-collapse"></i>
-        <span class="infoHash"><%- infoHash %></span>
+        <span class="title"><%- title || infoHash %></span>
         <i data-title="Toggle Favorite" class="icon-heart favorite <%= favorite ? 'fav' : '' %>"></i>
-        <i data-title="Torrent Status" class="icon-circle-blank"></i>
+        <i data-title="Torrent Status" class="status icon-circle <%- status ? 'ok' : '' %>"></i>
         <a href="<%- uri %>"><i data-title="Magnet Link" class="icon-magnet"></i></a>
     """
     events:
         'click a': 'handleMagnetClick'
         'click .favorite': 'toggleFav'
-        'click .infoHash': 'handleShowDetails'
+        'click .title': 'handleShowDetails'
         'click .details': 'handleShowDetails'
+
+    initialize: ->
+        @listenTo @model, 'change', @render
 
     toggleFav: ->
         @model.set( 'favorite', !@model.get( 'favorite') )
 
     handleMagnetClick: (ev) =>
         ev.preventDefault()
-        nw.Shell.openExternal( @model.get( 'uri' ) )
+        nw.Shell.openExternal( '' ) #@model.getUri() )
         false
 
     handleShowDetails: ->
@@ -136,7 +139,7 @@ class AppView extends Marionette.LayoutView
     onShow: ->
         @header.show( new TitlebarView() )
         @menu.show( @menuView )
-        @body.show( new BodyView( collection: @collection ) )
+        @handleShowMenuItem( 'collection' )
 
     handleShowMenuItem: (item) ->
         switch item

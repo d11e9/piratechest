@@ -2,24 +2,34 @@
  
 hashcash = window.hc = require( 'hashcashgen')
 magnetUri = require( 'magnet-uri' )
-gm = require( '../lib/gossip.js')
+
 
 class Magnet extends Backbone.Model	
 	initialize: ({@infoHash, favorite, title, tags}) ->
 		@set 'favorite', if favorite then true else false
+		@set 'status', false
+		@set 'title', undefined
+		@set 'peers', 0
 		@set 'uri', @getUri()
 
-	getUri: -> magnetUri.encode
+	getUri: => magnetUri.encode
 		infoHash: @get('infoHash')
 
+	updateMetaData: (torrent) =>
+		@torrent = torrent
+		@set( 'title', torrent.name )
+		@set( 'peers', torrent.swarm.numPeers )
+		@set( 'status', true )
+
 class MagnetCollection extends Backbone.Collection
-	initialize: ->
-		@listenTo gm, 'update', @handleGossipUpdate
+	initialize: (models, {@torrentClient, @gm}) ->
+		@listenTo @gm, 'update', @handleGossipUpdate
 		@listenTo this, 'add', @handleCollectionAdd
 
-	handleCollectionAdd: (model) ->
+	handleCollectionAdd: (model, collection, options) ->
+		@torrentClient.add( model.getUri(), model.updateMetaData )
 		hash = model.get('infoHash')
-		gm.update( hash, hashcash( hash, 4 ) )
+		@gm.update( hash, hashcash( hash, 4 ) )
 
 	handleGossipUpdate: (peerId, key, value) =>
 		if hashcash.check( key, value )

@@ -8,14 +8,16 @@ class module.exports.DetailsView extends Marionette.ItemView
     	</div>
         <p>Magnet Details</p>
         <ul>
-        	<li>Info Hash: <%- infoHash %></li>
-        	<li>Favorite: <%- favorite %></li>
-        	<li>Status: 34/999</li>
+            <li><strong>Title:</strong> <%- title %></li>
+        	<li><strong>Info Hash:</strong> <%- infoHash %></li>
+        	<li><strong>Favorite:</strong> <%- favorite %></li>
+        	<li><strong>Status:</strong> <%- status ? 'ok' : 'unknown' %></li>
+            <li><strong>Peers:</strong> <%- peers %></li>
             <li>
                 <a class="uri" href="<%- uri %>"><%- uri %></a>
             </li>
         	<li>
-        		Tags:
+        		<strong>Tags:</strong>
         		<ol>
         			<li>Test</li>
         			<li>Ubuntu</li>
