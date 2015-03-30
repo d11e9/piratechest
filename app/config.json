@@ -1,5 +1,5 @@
 {
-	"defaultView": "cards",
+	"defaultView": "collection",
 	"flags": {
 		"clearLocalStorageOnStartup": false,
 		"showInspectorOnStartup": true

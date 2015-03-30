@@ -10,7 +10,7 @@ class module.exports.DetailsView extends Marionette.ItemView
             </div>
             <p>Magnet Details</p>
             <ul>
-                <li><strong>Title:</strong> <%- title %></li>
+                <li><strong>Title:</strong> <%- dn %></li>
                 <li><strong>Info Hash:</strong> <%- infoHash %></li>
                 <li><strong>Favorite:</strong> <%- favorite %></li>
                 <li><strong>Status:</strong> <%- status ? 'ok' : 'unknown' %></li>
@@ -21,8 +21,9 @@ class module.exports.DetailsView extends Marionette.ItemView
                 <li>
                     <strong>Tags:</strong>
                     <ol>
-                        <li>Test</li>
-                        <li>Ubuntu</li>
+                        <% for ( tag in allTags ) { %>
+                            <li><%- tags[tag] %></li>
+                        <% } %>
                     </ol>
                 </li>
             </ul>
@@ -30,6 +31,9 @@ class module.exports.DetailsView extends Marionette.ItemView
     """
     events:
     	'click .close': 'handleClose'
+
+    templateHelpers: ->
+        allTags: -> @model.getTags()
 
     initialize: ->
         @listenTo @model, 'change', @render

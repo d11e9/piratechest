@@ -7,25 +7,53 @@ parseTorrent = require( 'parse-torrent' )
 
 
 class Magnet extends Backbone.Model 
-    initialize: ({@infoHash, favorite, title, tags}) ->
+    initialize: ({infoHash, favorite, name, dn, tr, tags}) ->
+        @set 'infoHash', infoHash
         @set 'favorite', if favorite then true else false
         @set 'status', false
-        @set 'title', undefined
+        @set 'dn', name or dn or undefined
+        @set 'tr', tr or undefined
         @set 'peers', 0
         @set 'uri', @getUri()
+        @set 'tags', []
 
     getUri: => magnetUri.encode
         infoHash: @get('infoHash')
 
+    getTags: ->
+        name = @get( 'dn' )
+        tags = @get( 'tags' )
+        tags.contact( name?.split?( /\W+/ ) or [] )
+
     updateMetadata: (torrent) =>
         @torrent = torrent
-        @set( 'title', torrent.name )
+        @set( 'dn', torrent.dn )
         @set( 'peers', torrent.swarm.numPeers )
+        @set( 'tr', torrent.tr )
         @set( 'status', true )
         # FIXME: Destroying this torrent as soon as we have metadata
         # this may not be the best way to prevent downloading
         # when all we want is the metadata (by default at least)
         @torrent.destroy()
+
+    @fromTorrent: (torrent) ->
+        new Magnet
+            infoHash: torrent.infoHash
+            dn: torrent.dn
+            tr: torrent.tr
+
+    @fromUri: (uri) ->
+        torrent = null
+        try
+            torrent = parseTorrent( uri )
+        catch err
+            console.error "Unable to parse magnet uri: ", uri
+            return
+        new Magnet
+            infoHash: torrent.infoHash
+            dn: torrent.dn
+            tr: torrent.tr
+
 
 class MagnetCollection extends Backbone.Collection
     initialize: (models, {torrentClient}) ->
