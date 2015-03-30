@@ -57,8 +57,18 @@ class CreateCardView extends OverlayView
 
     events:
         'click button': '_handleClickButton'
+        'click .overlay': '_handleClickOverlay'
+        'click .content': '_handleClickContent'
+
 
     initialize: ({@collection}) ->
+
+    _handleClickContent: (ev) ->
+        ev.preventDefault()
+        false
+
+    _handleClickOverlay: ->
+        @destroy()
 
     _handleClickButton: (ev) ->
         input = @ui.input.val()
