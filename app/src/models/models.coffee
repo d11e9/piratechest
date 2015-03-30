@@ -4,8 +4,6 @@ hashcash = window.hc = require( 'hashcashgen')
 magnetUri = require( 'magnet-uri' )
 parseTorrent = require( 'parse-torrent' )
 
-
-
 class Magnet extends Backbone.Model 
     initialize: ({infoHash, favorite, name, dn, tr, tags}) ->
         @set 'infoHash', infoHash
@@ -17,6 +15,7 @@ class Magnet extends Backbone.Model
         @set 'uri', @getUri()
         @set 'tags', []
 
+
     getUri: => magnetUri.encode
         infoHash: @get('infoHash')
 
@@ -27,7 +26,8 @@ class Magnet extends Backbone.Model
 
     updateMetadata: (torrent) =>
         @torrent = torrent
-        @set( 'dn', torrent.dn )
+        console.log "Updating torrent metadata:", torrent
+        @set( 'dn', torrent.dn or torrent.name )
         @set( 'peers', torrent.swarm.numPeers )
         @set( 'tr', torrent.tr )
         @set( 'status', true )
@@ -35,6 +35,7 @@ class Magnet extends Backbone.Model
         # this may not be the best way to prevent downloading
         # when all we want is the metadata (by default at least)
         @torrent.destroy()
+        @save()
 
     @fromTorrent: (torrent) ->
         new Magnet
@@ -48,11 +49,8 @@ class Magnet extends Backbone.Model
             torrent = parseTorrent( uri )
         catch err
             console.error "Unable to parse magnet uri: ", uri
-            return
-        new Magnet
-            infoHash: torrent.infoHash
-            dn: torrent.dn
-            tr: torrent.tr
+            return new Magnet( infoHash: uri )
+        @fromTorrent( torrent )
 
 
 class MagnetCollection extends Backbone.Collection
@@ -60,6 +58,7 @@ class MagnetCollection extends Backbone.Collection
         @torrentClient = torrentClient
 
     add: (model) =>
+        console.log "Adding to MagnetCollection", model
         hash = model.get?( 'infoHash')
         return false unless hash
         isDupe = @any (m) -> m.get('infoHash') is hash

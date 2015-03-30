@@ -2,6 +2,7 @@ fs = require 'fs'
 WebTorrent = require 'webtorrent'
 
 
+
 {_, $, Backbone, Marionette, nw, win, localStorage } = require './common.coffee'
 { AppView } = require './views/AppView.coffee'
 { LoadingView } = require './views/LoadingView.coffee'
@@ -17,6 +18,13 @@ win.menu = nativeMenuBar;
 Config = require( '../config.json')
 console.log 'CONFIG: ', Config
 
+client = new WebTorrent
+#    tracker: false
+
+client.on 'error', (error) ->
+    console.error "Webtorrent Error:", error
+
+magnetCollection = new MagnetCollection( null, torrentClient: client )
 
 if Config?.flags?.clearLocalStorageOnStartup
     localStorage.clear()
@@ -24,19 +32,14 @@ if Config?.flags?.clearLocalStorageOnStartup
 if Config?.flags?.showInspectorOnStartup
     win.showDevTools()
 
-client = new WebTorrent
-    tracker: false
+if Config?.flags?.loadFromLocalstorage
+    magnetCollection.fetch()
 
-
-client.on 'error', (error) ->
-    console.error "Webtorrent Error:", error
-
-magnetCollection = new MagnetCollection( null, torrentClient: client)
-
-# Use The Map, to find bootstrap/seed peers.
-client.seed "#{ __dirname }/../images/map.svg", { name: 'PiratechestSeedMap.svg', comment: 'This map is designed to be seeded as a torrent by the piratechest application in order to bootstrap peer discovery.' }, (torrent) ->
-    console.log "Seeding the map. Stored at: window.seedMap"
-    window.seedMap = torrent
+if Config?.flags?.getPeersFromSeed
+    # Use The Map, to find bootstrap/seed peers.
+    client.seed "#{ __dirname }/../images/map.svg", { name: 'PiratechestSeedMap.svg', comment: 'This map is designed to be seeded as a torrent by the piratechest application in order to bootstrap peer discovery.' }, (torrent) ->
+        console.log "Seeding the map. Stored at: window.seedMap"
+        window.seedMap = torrent
 
 
 $ ->

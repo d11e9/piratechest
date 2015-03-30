@@ -33,7 +33,10 @@ class module.exports.DetailsView extends Marionette.ItemView
     	'click .close': 'handleClose'
 
     templateHelpers: ->
-        allTags: -> @model.getTags()
+        allTags: ->
+            tags = @model.getTags()
+            console.log "tags:", tags
+            tags            
 
     initialize: ->
         @listenTo @model, 'change', @render

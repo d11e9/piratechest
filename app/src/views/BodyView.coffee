@@ -53,6 +53,7 @@ class module.exports.BodyView extends Marionette.LayoutView
         console.log "Importing torrents from: ", path
         collection = @collection
         file.walk path, (err, dirPath, dirs, files) ->
+            return if err
             for file in files
                 console.log "Checking file: ", file
                 if /\.torrent$/.test( file )

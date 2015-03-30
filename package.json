@@ -16,11 +16,8 @@
   "author": "d11e9",
   "license": "NONE YET",
   "dependencies": {
-    "file": "^0.2.2",
     "grunt": "^0.4.5",
     "grunt-node-webkit-builder": "^1.0.2",
-    "nodewebkit": "^0.11.6",
-    "parse-torrent": "~4.0.0",
-    "read-torrent": "^1.3.0"
+    "nodewebkit": "^0.11.6"
   }
 }

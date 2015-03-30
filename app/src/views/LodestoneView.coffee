@@ -28,13 +28,17 @@ class module.exports.LodestoneView extends Marionette.LayoutView
 	regions:
 		output: '.output'
 
-	initialize: ({@torrentClient}) ->
+	initialize: ({@torrentClient, config}) ->
 		console.log "INIT LodestoneView", @torrentClient
-		@lodestone = window.lodestone = new Lodestone()
-		@listenTo @lodestone, 'peer', @_handleAddPeer
-		@listenTo @lodestone, 'data', @_handleData
+		if Config?.flags?.connectLodestoneOnStartup
+			@lodestone = window.lodestone = new Lodestone()
+		
 
 	onShow: ->
+		if !Config?.flags?.connectLodestoneOnStartup and !@lodestone?
+			@lodestone = window.lodestone = new Lodestone()
+		@listenTo @lodestone, 'peer', @_handleAddPeer
+		@listenTo @lodestone, 'data', @_handleData
 		@trigger( 'show:overlay', new LodestoneIntroView() ) unless localStorage.introLodestoneShown
 		@collection = new MagnetCollection([], { @torrentClient } )
 		@collectionView = new MagnetCollectionView( collection: @collection )

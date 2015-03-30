@@ -29,7 +29,7 @@ class module.exports.AppView extends Marionette.LayoutView
         @defaultItem = config?.defaultView
         @menuView = new MenuView( { @defaultItem } )
         @bodyView = new BodyView( collection: @collection )
-        @searchView = new LodestoneView( collection: @collection, torrentClient: @torrentClient )
+        @searchView = new LodestoneView( collection: @collection, torrentClient: @torrentClient, config: config )
         @cardsView = new CardsView()
         @settingsView = new SettingsView()
 
