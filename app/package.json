@@ -21,7 +21,7 @@
     "position": "center",
     "width": 835,
     "height": 600,
-    "min_width": 835,
+    "min_width": 300,
     "min_height": 200,
     "resizable": true,
     "always-on-top": false,

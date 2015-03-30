@@ -17,7 +17,17 @@ win.menu = nativeMenuBar;
 Config = require( '../config.json')
 console.log 'CONFIG: ', Config
 
-client = new WebTorrent()
+
+if Config?.flags?.clearLocalStorageOnStartup
+    localStorage.clear()
+
+if Config?.flags?.showInspectorOnStartup
+    win.showDevTools()
+
+client = new WebTorrent
+    tracker: false
+
+
 client.on 'error', (error) ->
     console.error "Webtorrent Error:", error
 

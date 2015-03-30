@@ -6,11 +6,11 @@ class module.exports.MenuView extends Marionette.LayoutView
 	template: _.template """
 		<div class="content">
 			<ul>
-				<li data-item="collection"><i class="icon-magnet"></i>Magnet Collection</li>
-				<li data-item="cards"><i class="icon-tags"></i>Card Deck</li>
+				<li data-item="collection"><i class="icon-magnet"></i><span>Magnet Collection</span></li>
+				<li data-item="cards"><i class="icon-tags"></i><span>Card Deck</span></li>
 				<li data-item="search" class="search">
+					<i class="icon-search"></i>
 					<form action="">
-						<i class="icon-search"></i>
 						Lodestone
 						<input placeholder="Search" type="text">
 					</form>
