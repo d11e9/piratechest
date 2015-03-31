@@ -1,10 +1,11 @@
 {
-	"defaultView": "collection",
+	"defaultView": "raids",
 	"flags": {
 		"clearLocalStorageOnStartup": false,
 		"showInspectorOnStartup": true,
 		"loadFromDatastore": true,
 		"getPeersFromSeed": false,
-		"connectLodestoneOnStartup": false
+		"connectLodestoneOnStartup": false,
+		"runTracker": false
 	}
 }

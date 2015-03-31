@@ -1,0 +1,29 @@
+@import 'colors';
+@import 'layoutValues';
+
+
+.raids-view {
+	padding: 5em;
+	text-align: center;
+
+	.content {
+		max-width: 40em;
+		margin: 0 auto;
+
+		img {
+			width: 20em;
+			margin-bottom: 1em;
+		}
+
+		.save-loot {
+			display: none;
+		}
+
+
+		&.found-loot {
+			.save-loot {
+				display: block;
+			}
+		}
+	}
+}

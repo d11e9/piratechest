@@ -15,6 +15,7 @@ class module.exports.MenuView extends Marionette.LayoutView
 						<input placeholder="Search" type="text">
 					</form>
 				</li>
+				<li data-item="raids" class="raids"><i class="icon-flag"></i><span>Raids</span></li>
 				<li class="settings" data-item="settings"><i class="icon-cog"></i></li>
 			</ul>
 		</div>

@@ -9,7 +9,7 @@
 { CardsView  } = require './CardsView.coffee'
 { SettingsView  } = require './SettingsView.coffee'
 { BodyView } = require './BodyView.coffee'
-
+{ RaidsView } = require './RaidsView.coffee'
 
 class module.exports.AppView extends Marionette.LayoutView
     className: 'app-view'
@@ -28,24 +28,28 @@ class module.exports.AppView extends Marionette.LayoutView
     initialize: ({@collection, config, @torrentClient}) ->
         @defaultItem = config?.defaultView
         @menuView = new MenuView( { @defaultItem } )
-        @bodyView = new BodyView( collection: @collection )
-        @searchView = new LodestoneView( collection: @collection, torrentClient: @torrentClient, config: config )
-        @cardsView = new CardsView()
-        @settingsView = new SettingsView()
+        
+        @views = {}
+        @views['collection'] = new BodyView
+            collection: @collection
+
+        @views['search'] = new LodestoneView
+            collection: @collection
+            torrentClient: @torrentClient
+            config: config
+
+        @views['cards'] = new CardsView()
+        @views['settings'] = new SettingsView()
+        @views['raids'] = new RaidsView()
 
     onShow: ->
         @header.show( new TitlebarView() )
         @menu.show( @menuView )
-        @listenTo @menuView, 'show:menuItem', @handleShowMenuItem
-        @handleShowMenuItem( @defaultItem or 'collection' )
+        @listenTo @menuView, 'show:menuItem', @_handleShowMenuItem
+        @_handleShowMenuItem( @defaultItem or 'collection' )
 
-    handleShowMenuItem: (item) ->
-        view = switch item
-            when 'collection' then @bodyView
-            when 'search' then @searchView
-            when 'cards' then @cardsView
-            when 'settings' then @settingsView
-
+    _handleShowMenuItem: (item) ->
+        view = @views[item]
         @listenTo view, 'show:overlay', @showOverlay
         console.log "AppView: showing #{ item } view.", view    
         @body.show( view, preventDestroy: true )

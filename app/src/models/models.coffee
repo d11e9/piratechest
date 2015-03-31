@@ -1,8 +1,9 @@
-{_, $, Backbone, Marionette } = require( '../common.coffee' )
+{_, $, Backbone, Marionette, nw } = require( '../common.coffee' )
  
 hashcash = window.hc = require( 'hashcashgen')
 magnetUri = require( 'magnet-uri' )
 parseTorrent = require( 'parse-torrent' )
+
 
 class Magnet extends Backbone.Model 
     initialize: ({infoHash, favorite, name, dn, tr, tags}) ->
@@ -113,6 +114,9 @@ class Card extends Backbone.Model
 class CardCollection extends Backbone.Collection
     model: Card
     initialize: ->
+
+
+
 
 
 module.exports = { Magnet, MagnetCollection, Card, CardCollection }
