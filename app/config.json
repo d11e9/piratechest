@@ -1,7 +1,7 @@
 {
-	"defaultView": "search",
+	"defaultView": "collection",
 	"flags": {
-		"clearLocalStorageOnStartup": true,
+		"clearLocalStorageOnStartup": false,
 		"showInspectorOnStartup": false,
 		"loadFromDatastore": true,
 		"getPeersFromSeed": true,

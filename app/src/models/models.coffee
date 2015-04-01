@@ -39,6 +39,7 @@ class Magnet extends Backbone.Model
         # this may not be the best way to prevent downloading
         # when all we want is the metadata (by default at least)
         @torrent.swarm.pause()
+        @collection.sync()
 
     @fromTorrent: (torrent) ->
         new Magnet

@@ -7,6 +7,7 @@ WebTorrent = require 'webtorrent'
 { LoadingView } = require './views/LoadingView.coffee'
 { IntroView } = require './views/IntroView.coffee'
 { ContentsView } = require './views/ContentsView.coffee'
+PersistantCollection = require './models/PersistantCollection.coffee'
 
 
 { MagnetCollection, Magnet } = require './models/models.coffee'
@@ -29,7 +30,9 @@ client = new WebTorrent
 client.on 'error', (error) ->
     console.error "Webtorrent Error:", error
 
-magnetCollection = new MagnetCollection( null, torrentClient: client )
+magnetCollection = PersistantCollection( new MagnetCollection( null, torrentClient: client ), 'magnets' )
+console.log magnetCollection
+
 
 if CONFIG?.flags?.clearLocalStorageOnStartup
     localStorage.clear()
