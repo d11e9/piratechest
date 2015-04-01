@@ -1,5 +1,5 @@
 {
-	"defaultView": "raids",
+	"defaultView": "search",
 	"flags": {
 		"clearLocalStorageOnStartup": false,
 		"showInspectorOnStartup": true,

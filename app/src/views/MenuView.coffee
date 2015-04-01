@@ -8,12 +8,8 @@ class module.exports.MenuView extends Marionette.LayoutView
 			<ul>
 				<li data-item="collection"><i class="icon-magnet"></i><span>Magnet Collection</span></li>
 				<li data-item="cards"><i class="icon-tags"></i><span>Card Deck</span></li>
-				<li data-item="search" class="search">
-					<i class="icon-search"></i>
-					<form action="">
-						Lodestone
-						<input placeholder="Search" type="text">
-					</form>
+				<li data-item="search" class="search"><i class="icon-search"></i>
+					<span>Lodestone Search</span>
 				</li>
 				<li data-item="raids" class="raids"><i class="icon-flag"></i><span>Raids</span></li>
 				<li class="settings" data-item="settings"><i class="icon-cog"></i></li>
