@@ -40,11 +40,17 @@ if CONFIG?.flags?.showInspectorOnStartup
 if CONFIG?.flags?.loadFromLocalstorage
     magnetCollection.fetch()
 
+
+window.app = app = {}
+
 if CONFIG?.flags?.getPeersFromSeed
     # Use The Map, to find bootstrap/seed peers.
     client.seed "#{ __dirname }/../images/map.svg", { name: 'PiratechestSeedMap.svg', comment: 'This map is designed to be seeded as a torrent by the piratechest application in order to bootstrap peer discovery.' }, (torrent) ->
         console.log "Seeding the map. Stored at: window.seedMap"
-        window.seedMap = torrent
+        window.seedMap = app.seedMap = torrent
+        magnetCollection.add Magnet.fromTorrent( torrent )
+        app.seeds = torrent.swarm._peers
+        torrent.swarm.resume()
 
 $ ->
     appRegion = new Marionette.Region( el: $('body').get(0) )
@@ -62,11 +68,17 @@ $ ->
     win.show()
 
     # test magnet TODO: Remove this.
-    setTimeout ( -> 
-        magnet = new Magnet
+    setTimeout ( ->
+
+        magnetCollection.add new Magnet
             infoHash: '546cf15f724d19c4319cc17b179d7e035f89c1f4'
             favorite: false
-        magnetCollection.add magnet
+
+        magnetCollection.add new Magnet
+            infoHash: '81d8ef3729a7265d30155c5e7b047312fe473e44'
+            favorite: false
+
+        
     ), 3000
 
 
