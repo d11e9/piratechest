@@ -1,8 +1,8 @@
 {
 	"defaultView": "search",
 	"flags": {
-		"clearLocalStorageOnStartup": false,
-		"showInspectorOnStartup": true,
+		"clearLocalStorageOnStartup": true,
+		"showInspectorOnStartup": false,
 		"loadFromDatastore": true,
 		"getPeersFromSeed": false,
 		"connectLodestoneOnStartup": false,

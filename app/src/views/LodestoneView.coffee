@@ -4,7 +4,6 @@ Lodestone = require( '../lib/lodestone')
 
 { MagnetCollectionView  } = require './MagnetCollectionView.coffee'
 { Magnet, MagnetCollection } = require '../models/models.coffee'
-{ LodestoneIntroView } = require './LodestoneIntroView.coffee'
 
 class module.exports.LodestoneView extends Marionette.LayoutView
 	className: 'lodestone-view'
@@ -32,16 +31,13 @@ class module.exports.LodestoneView extends Marionette.LayoutView
 
 	initialize: ({@torrentClient, config}) ->
 		console.log "INIT LodestoneView", @torrentClient
-		if Config?.flags?.connectLodestoneOnStartup
-			@lodestone = window.lodestone = new Lodestone()
+		@lodestone = window.lodestone = new Lodestone()
 		
 
 	onShow: ->
-		if !Config?.flags?.connectLodestoneOnStartup and !@lodestone?
-			@lodestone = window.lodestone = new Lodestone()
 		@listenTo @lodestone, 'peer', @_handleAddPeer
 		@listenTo @lodestone, 'data', @_handleData
-		@trigger( 'show:overlay', new LodestoneIntroView() ) unless localStorage.introLodestoneShown
+
 		@collection = new MagnetCollection([], { @torrentClient } )
 		@collectionView = new MagnetCollectionView( collection: @collection )
 		@output.show( @collectionView )
