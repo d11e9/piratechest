@@ -6,6 +6,9 @@ _ = require 'underscore'
 class Store
 	constructor: (name) ->
 		@_store = new Datastore( filename: "./data/#{ name }.db", autoload: true )
+		@_store.ensureIndex
+			fieldName: 'infoHash'
+			unique: true
 	
 	sync: (method, model, options) =>
 		console.log "Syncing model to database: ", arguments
@@ -27,42 +30,22 @@ class Store
 
 	_handleCreate: (model, options) =>
 		console.log "_handleCreate:", model.toJSON()
-		@_store.update {infoHash: model.get('infoHash')},  model.toJSON(), {upsert: true}, (err,data) -> 
-			if err
-				console.error( err )
-				options.error( err )
-			else
-				options.success( data )
+		@_store.update {infoHash: model.get('infoHash')},  model.toJSON(), {upsert: true}, @_handleComplete( options )
 
 
 	_handleUpdate: (model, options) =>
 		console.log "_handleUpdate:", arguments
-		@_store.update { infoHash: model.get('infoHash') }, model.toJSON(), (err,data) -> 
-			if err
-				console.error( err )
-				options.error( err )
-			else
-				options.success( data )
+		@_store.update { infoHash: model.get('infoHash') }, model.toJSON(), @_handleComplete( options )
 
 
 	_handleRead: (model, options) =>
 		console.log "_handleRead:", arguments
-		@_store.find {}, (err,data) -> 
-			if err
-				console.error( err )
-				options.error( err )
-			else
-				options.success( data )
+		@_store.find {}, @_handleComplete( options )
 
 
 	_handleDelete: (model, options) =>
 		console.log "_handleDelete:", arguments
-		@_store.remove { infoHash: model.get('infoHash') }, (err,data) -> 
-			if err
-				console.error( err )
-				options.error( err )
-			else
-				options.success( data )
+		@_store.remove { infoHash: model.get('infoHash') }, @_handleComplete( options )
 
 
 

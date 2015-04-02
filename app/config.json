@@ -4,7 +4,7 @@
 		"clearLocalStorageOnStartup": false,
 		"showInspectorOnStartup": true,
 		"loadFromDatastore": true,
-		"getPeersFromSeed": false,
+		"getPeersFromSeed": true,
 		"connectLodestoneOnStartup": false,
 		"runTracker": true
 	}

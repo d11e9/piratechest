@@ -7,22 +7,22 @@ parseTorrent = require( 'parse-torrent' )
 
 class Magnet extends Backbone.Model
 
-    initialize: ({infoHash, favorite, name, dn, tr, tags, torrent}) ->
+    initialize: ({infoHash, favorite, dn, tr, tags}) ->
         @set 'infoHash', infoHash
         @set 'favorite', if favorite then true else false
         @set 'status', false
-        @set 'dn', name or dn or ''
+        @set 'dn', dn or false
         @set 'tr', tr
         @set 'peers', 0
         @set 'uri', @getUri()
         @set 'tags', []
-        @updateMetadata( torrent ) if torrent
+        @listenTo @, 'change', -> @save()
 
     getUri: => magnetUri.encode
         infoHash: @get('infoHash')
 
     sync: (method, model, options) ->
-        window.magnetStore.sync( method, model, options )
+        @collection?.store.sync( method, model, options ) if @collection?.store
 
     getTags: ->
         name = @get( 'dn' )
@@ -31,21 +31,22 @@ class Magnet extends Backbone.Model
 
     updateMetadata: (torrent) =>
         @torrent ?= torrent
-        console.log "Updating torrent metadata:", torrent
-        @set( 'dn', torrent.dn or torrent.name or '' )
+        console.log "Updating torrent metadata:", arguments
+        @set( 'dn', torrent.dn or torrent.name or false )
         @set( 'peers', torrent?.swarm?.numPeers or 0 )
         @set( 'tr', torrent.tr )
         @set( 'status', true )
+        console.log('updated magnet', @, torrent)
         # FIXME: Destroying this torrent as soon as we have metadata
         # this may not be the best way to prevent downloading
         # when all we want is the metadata (by default at least)
+        @trigger('change')
         @torrent?.swarm?.pause()
-        @save()
 
     @fromTorrent: (torrent) ->
         new Magnet
             infoHash: torrent.infoHash
-            dn: torrent.dn
+            dn: torrent.dn or false
             tr: torrent.tr
 
     @fromUri: (uri) ->
@@ -60,15 +61,25 @@ class Magnet extends Backbone.Model
 
 class MagnetCollection extends Backbone.Collection
 
-    initialize: (models, {torrentClient}) ->
-        @torrentClient = torrentClient
+    model: Magnet
+    initialize: (models, {@torrentClient, @store} = {}) ->
         @listenTo @, 'add', @_handleAdd
 
-    _handleAdd:() ->
-        console.log '_handleAdd:', arguments
+    _handleAdd: (model, collection, options) ->
+        console.log "_handleAdd: #{ JSON.stringify( model.toJSON() ) }----#{ JSON.stringify( collection.toJSON() )}-----#{ JSON.stringify( options ) }"
+        debugger
+        collection.getTorrentData?(model)
 
     sync: (method, model, options) ->
-        window.magnetStore.sync( method, model, options )
+        @store.sync( method, model, options ) if @store
+
+    getTorrentData: (model) =>
+        console.log @torrentClient, model
+        torrent = @torrentClient.get( model.get('infoHash') )
+        unless torrent
+            torrent = @torrentClient.add( model.getUri(), model.updateMetadata )
+        else
+            model.updateMetadata( torrent )
 
     add: (model) =>
         console.log "Adding to MagnetCollection", model
@@ -82,13 +93,15 @@ class MagnetCollection extends Backbone.Collection
             return false
 
         isDupe = @any (m) -> m.get('infoHash') is hash
-        torrent = @torrentClient.get( model.get('infoHash') ) or @torrentClient.add( model.getUri(), model.updateMetadata )
-        model.torrent = torrent
+        console.log( "Added magnet id a DUPE? #{ isDupe }" )
+        return false if isDupe
+
+        @getTorrentData(model)
 
         # Up to you either return false or throw an exception or silently ignore
         # NOTE: DEFAULT functionality of adding duplicate to collection is to IGNORE and RETURN. Returning false here is unexpected. ALSO, this doesn't support the merge: true flag.
         # Return result of prototype.add to ensure default functionality of .add is maintained. 
-        return if isDupe then false else Backbone.Collection.prototype.add.call( this, model ) 
+        return Backbone.Collection.prototype.add.call( this, model ) 
 
 class Card extends Backbone.Model
 

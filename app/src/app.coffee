@@ -27,24 +27,26 @@ win.menu = nativeMenuBar;
 CONFIG = require( '../config.json')
 console.log 'CONFIG: ', CONFIG
 
+if CONFIG?.flags?.clearLocalStorageOnStartup
+    localStorage.clear()
+
+if CONFIG?.flags?.showInspectorOnStartup
+    win.showDevTools()
+
 client = new WebTorrent
     tracker: CONFIG?.flags?.runTracker
 
 client.on 'error', (error) ->
     console.error "Webtorrent Error:", error
 
-window.magnetStore = new Store('magnets')
 
 window.app.magnetCollection = magnetCollection =  new MagnetCollection [],
     torrentClient: client
+    store: new Store('magnets')
+
 console.log magnetCollection
 
 
-if CONFIG?.flags?.clearLocalStorageOnStartup
-    localStorage.clear()
-
-if CONFIG?.flags?.showInspectorOnStartup
-    win.showDevTools()
 
 if CONFIG?.flags?.loadFromDatastore
     magnetCollection.fetch()
@@ -55,8 +57,9 @@ if CONFIG?.flags?.getPeersFromSeed
     # Use The Map, to find bootstrap/seed peers.
     client.seed "#{ __dirname }/../images/map.svg", { name: 'PiratechestSeedMap.svg', comment: 'This map is designed to be seeded as a torrent by the piratechest application in order to bootstrap peer discovery.' }, (torrent) ->
         console.log "Seeding the map. Stored at: window.seedMap"
-        window.seedMap = app.seedMap = torrent
-        magnetCollection.add Magnet.fromTorrent( torrent )
+        app.seedMap = torrent
+        magnet = Magnet.fromTorrent( torrent )
+        magnetCollection.create( magnet )
         app.seeds = torrent.swarm._peers
         torrent.swarm.resume()
 
