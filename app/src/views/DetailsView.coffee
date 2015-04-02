@@ -41,5 +41,12 @@ class module.exports.DetailsView extends Marionette.ItemView
     initialize: ->
         @listenTo @model, 'change', @render
 
+    onShow: ->
+        console.log( "Showing details for: ", @model)
+        @model.torrent?.discovery.tracker.scrape()
+        @model.torrent?.discovery.tracker.on 'scrape', (data) =>
+            console.log "Got Screape event for torrent, ", @model.torrent
+            console.log data
+
     handleClose: ->
     	@trigger( 'close' )

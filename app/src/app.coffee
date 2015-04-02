@@ -33,7 +33,7 @@ if CONFIG?.flags?.clearLocalStorageOnStartup
 if CONFIG?.flags?.showInspectorOnStartup
     win.showDevTools()
 
-client = new WebTorrent
+app.client = client = new WebTorrent
     tracker: CONFIG?.flags?.runTracker
 
 client.on 'error', (error) ->

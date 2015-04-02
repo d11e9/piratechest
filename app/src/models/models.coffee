@@ -41,7 +41,8 @@ class Magnet extends Backbone.Model
         # this may not be the best way to prevent downloading
         # when all we want is the metadata (by default at least)
         @trigger('change')
-        @torrent?.swarm?.pause()
+        @torrent.destroy?()
+        torrent.destroy?()
 
     @fromTorrent: (torrent) ->
         new Magnet
@@ -66,9 +67,7 @@ class MagnetCollection extends Backbone.Collection
         @listenTo @, 'add', @_handleAdd
 
     _handleAdd: (model, collection, options) ->
-        console.log "_handleAdd: #{ JSON.stringify( model.toJSON() ) }----#{ JSON.stringify( collection.toJSON() )}-----#{ JSON.stringify( options ) }"
-        debugger
-        collection.getTorrentData?(model)
+        collection.getTorrentData(model)
 
     sync: (method, model, options) ->
         @store.sync( method, model, options ) if @store
