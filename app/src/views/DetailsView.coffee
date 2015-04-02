@@ -21,7 +21,7 @@ class module.exports.DetailsView extends Marionette.ItemView
                 <li>
                     <strong>Tags:</strong>
                     <ol>
-                        <% for ( tag in allTags ) { %>
+                        <% var tags = allTags(); for ( tag in tags ) { %>
                             <li><%- tags[tag] %></li>
                         <% } %>
                     </ol>
@@ -34,7 +34,7 @@ class module.exports.DetailsView extends Marionette.ItemView
 
     templateHelpers: ->
         allTags: ->
-            tags = @model.getTags()
+            tags = @tags.concat( @dn?.split?( /\W+/ ) or [] )
             console.log "tags:", tags
             tags            
 

@@ -27,7 +27,7 @@ class Magnet extends Backbone.Model
     getTags: ->
         name = @get( 'dn' )
         tags = @get( 'tags' )
-        tags.contact( name?.split?( /\W+/ ) or [] )
+        tags.concat( name?.split?( /\W+/ ) or [] )
 
     updateMetadata: (torrent) =>
         @torrent ?= torrent
