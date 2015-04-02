@@ -27,7 +27,7 @@ class Store
 
 	_handleCreate: (model, options) =>
 		console.log "_handleCreate:", model.toJSON()
-		@_store.insert model.toJSON(), (err,data) -> 
+		@_store.update {infoHash: model.get('infoHash')},  model.toJSON(), {upsert: true}, (err,data) -> 
 			if err
 				console.error( err )
 				options.error( err )
@@ -37,7 +37,7 @@ class Store
 
 	_handleUpdate: (model, options) =>
 		console.log "_handleUpdate:", arguments
-		@_store.update { id: model.get('id') }, model.toJSON(), (err,data) -> 
+		@_store.update { infoHash: model.get('infoHash') }, model.toJSON(), (err,data) -> 
 			if err
 				console.error( err )
 				options.error( err )
@@ -47,7 +47,7 @@ class Store
 
 	_handleRead: (model, options) =>
 		console.log "_handleRead:", arguments
-		@_store.find { id: model.get('id') }, model.toJSON(), (err,data) -> 
+		@_store.find {}, (err,data) -> 
 			if err
 				console.error( err )
 				options.error( err )
@@ -57,7 +57,7 @@ class Store
 
 	_handleDelete: (model, options) =>
 		console.log "_handleDelete:", arguments
-		@_store.remove { id: model.get('id') }, model.toJSON(), (err,data) -> 
+		@_store.remove { infoHash: model.get('infoHash') }, (err,data) -> 
 			if err
 				console.error( err )
 				options.error( err )

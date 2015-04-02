@@ -5,7 +5,7 @@
 		"showInspectorOnStartup": true,
 		"loadFromDatastore": true,
 		"getPeersFromSeed": false,
-		"connectLodestoneOnStartup": true,
-		"runTracker": false
+		"connectLodestoneOnStartup": false,
+		"runTracker": true
 	}
 }

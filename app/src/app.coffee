@@ -46,8 +46,8 @@ if CONFIG?.flags?.clearLocalStorageOnStartup
 if CONFIG?.flags?.showInspectorOnStartup
     win.showDevTools()
 
-#if CONFIG?.flags?.loadFromLocalstorage
-    #magnetCollection.fetch()
+if CONFIG?.flags?.loadFromDatastore
+    magnetCollection.fetch()
 
 
 

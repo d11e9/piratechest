@@ -19,6 +19,7 @@ class MagnetView extends Marionette.ItemView
 
     initialize: ->
         @listenTo @model, 'change', @render
+        console.log @model.toJSON()
 
     toggleFav: ->
         @model.set( 'favorite', !@model.get( 'favorite') )

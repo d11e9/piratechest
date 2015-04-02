@@ -11,7 +11,7 @@ class Magnet extends Backbone.Model
         @set 'infoHash', infoHash
         @set 'favorite', if favorite then true else false
         @set 'status', false
-        @set 'dn', name or dn or undefined
+        @set 'dn', name or dn or ''
         @set 'tr', tr
         @set 'peers', 0
         @set 'uri', @getUri()
@@ -32,21 +32,21 @@ class Magnet extends Backbone.Model
     updateMetadata: (torrent) =>
         @torrent ?= torrent
         console.log "Updating torrent metadata:", torrent
-        @set( 'dn', torrent.dn or torrent.name )
-        @set( 'peers', torrent.swarm.numPeers )
+        @set( 'dn', torrent.dn or torrent.name or '' )
+        @set( 'peers', torrent?.swarm?.numPeers or 0 )
         @set( 'tr', torrent.tr )
         @set( 'status', true )
         # FIXME: Destroying this torrent as soon as we have metadata
         # this may not be the best way to prevent downloading
         # when all we want is the metadata (by default at least)
-        @torrent.swarm.pause()
+        @torrent?.swarm?.pause()
+        @save()
 
     @fromTorrent: (torrent) ->
         new Magnet
             infoHash: torrent.infoHash
             dn: torrent.dn
             tr: torrent.tr
-            torrent: torrent
 
     @fromUri: (uri) ->
         torrent = null
@@ -67,9 +67,8 @@ class MagnetCollection extends Backbone.Collection
     _handleAdd:() ->
         console.log '_handleAdd:', arguments
 
-    fetch: ->
-        console.log "magnetCollection tried to fetch()", arguments
-        debugger
+    sync: (method, model, options) ->
+        window.magnetStore.sync( method, model, options )
 
     add: (model) =>
         console.log "Adding to MagnetCollection", model
@@ -84,7 +83,7 @@ class MagnetCollection extends Backbone.Collection
 
         isDupe = @any (m) -> m.get('infoHash') is hash
         torrent = @torrentClient.get( model.get('infoHash') ) or @torrentClient.add( model.getUri(), model.updateMetadata )
-        model.set( 'torrent', torrent )
+        model.torrent = torrent
 
         # Up to you either return false or throw an exception or silently ignore
         # NOTE: DEFAULT functionality of adding duplicate to collection is to IGNORE and RETURN. Returning false here is unexpected. ALSO, this doesn't support the merge: true flag.

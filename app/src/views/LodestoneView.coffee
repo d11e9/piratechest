@@ -31,10 +31,11 @@ class module.exports.LodestoneView extends Marionette.LayoutView
 
 	initialize: ({@torrentClient, config}) ->
 		console.log "INIT LodestoneView", @torrentClient
-		@lodestone = window.lodestone = new Lodestone()
+		@lodestone = window.lodestone = new Lodestone() if config?.flags?.connectLodestoneOnStartup
 		
 
 	onShow: ->
+		@lodestone ?= window.lodestone = new Lodestone()	
 		@listenTo @lodestone, 'peer', @_handleAddPeer
 		@listenTo @lodestone, 'data', @_handleData
 
