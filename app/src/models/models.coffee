@@ -5,7 +5,8 @@ magnetUri = require( 'magnet-uri' )
 parseTorrent = require( 'parse-torrent' )
 
 
-class Magnet extends Backbone.Model 
+class Magnet extends Backbone.Model
+
     initialize: ({infoHash, favorite, name, dn, tr, tags, torrent}) ->
         @set 'infoHash', infoHash
         @set 'favorite', if favorite then true else false
@@ -17,11 +18,11 @@ class Magnet extends Backbone.Model
         @set 'tags', []
         @updateMetadata( torrent ) if torrent
 
-
-
-
     getUri: => magnetUri.encode
         infoHash: @get('infoHash')
+
+    sync: (method, model, options) ->
+        window.magnetStore.sync( method, model, options )
 
     getTags: ->
         name = @get( 'dn' )
@@ -39,7 +40,6 @@ class Magnet extends Backbone.Model
         # this may not be the best way to prevent downloading
         # when all we want is the metadata (by default at least)
         @torrent.swarm.pause()
-        @collection.sync()
 
     @fromTorrent: (torrent) ->
         new Magnet
@@ -59,22 +59,32 @@ class Magnet extends Backbone.Model
 
 
 class MagnetCollection extends Backbone.Collection
+
     initialize: (models, {torrentClient}) ->
         @torrentClient = torrentClient
+        @listenTo @, 'add', @_handleAdd
+
+    _handleAdd:() ->
+        console.log '_handleAdd:', arguments
+
+    fetch: ->
+        console.log "magnetCollection tried to fetch()", arguments
+        debugger
 
     add: (model) =>
         console.log "Adding to MagnetCollection", model
         hash = model.get?( 'infoHash')
         return false unless hash
-        isDupe = @any (m) -> m.get('infoHash') is hash
         try
             parsedTorrent = (hash && hash.parsedTorrent) || parseTorrent(hash)
         catch err
             console.error( "Invalid torrent cannot add. " )
             console.log 'couldnt add:', model.get( 'hash' )
             return false
-        
+
+        isDupe = @any (m) -> m.get('infoHash') is hash
         torrent = @torrentClient.get( model.get('infoHash') ) or @torrentClient.add( model.getUri(), model.updateMetadata )
+        model.set( 'torrent', torrent )
 
         # Up to you either return false or throw an exception or silently ignore
         # NOTE: DEFAULT functionality of adding duplicate to collection is to IGNORE and RETURN. Returning false here is unexpected. ALSO, this doesn't support the merge: true flag.

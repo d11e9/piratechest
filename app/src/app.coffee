@@ -7,10 +7,13 @@ WebTorrent = require 'webtorrent'
 { LoadingView } = require './views/LoadingView.coffee'
 { IntroView } = require './views/IntroView.coffee'
 { ContentsView } = require './views/ContentsView.coffee'
-PersistantCollection = require './models/PersistantCollection.coffee'
+
 
 
 { MagnetCollection, Magnet } = require './models/models.coffee'
+Store = require './models/PersistantModel.coffee'
+
+window.app = app = {}
 
 # { Database } = require './Database.coffee'
 # db = new Database
@@ -30,7 +33,10 @@ client = new WebTorrent
 client.on 'error', (error) ->
     console.error "Webtorrent Error:", error
 
-magnetCollection = PersistantCollection( new MagnetCollection( null, torrentClient: client ), 'magnets' )
+window.magnetStore = new Store('magnets')
+
+window.app.magnetCollection = magnetCollection =  new MagnetCollection [],
+    torrentClient: client
 console.log magnetCollection
 
 
@@ -40,11 +46,10 @@ if CONFIG?.flags?.clearLocalStorageOnStartup
 if CONFIG?.flags?.showInspectorOnStartup
     win.showDevTools()
 
-if CONFIG?.flags?.loadFromLocalstorage
-    magnetCollection.fetch()
+#if CONFIG?.flags?.loadFromLocalstorage
+    #magnetCollection.fetch()
 
 
-window.app = app = {}
 
 if CONFIG?.flags?.getPeersFromSeed
     # Use The Map, to find bootstrap/seed peers.
@@ -73,11 +78,11 @@ $ ->
     # test magnet TODO: Remove this.
     setTimeout ( ->
 
-        magnetCollection.add new Magnet
+        magnetCollection.create new Magnet
             infoHash: '546cf15f724d19c4319cc17b179d7e035f89c1f4'
             favorite: false
 
-        magnetCollection.add new Magnet
+        magnetCollection.create new Magnet
             infoHash: '81d8ef3729a7265d30155c5e7b047312fe473e44'
             favorite: false
 
