@@ -1,6 +1,9 @@
 {_, $, Backbone, Marionette, nw } = require( '../common.coffee' )
 { Raid } = require '../models/Raid.coffee'
+{ Magnet, MagnetCollection } = require '../models/models.coffee'
+
 { OverlayView } = require './OverlayView.coffee'
+{ MagnetCollectionView  } = require './MagnetCollectionView.coffee'
 
 class module.exports.RaidsView extends Marionette.LayoutView
     className: 'raids-view'
@@ -38,24 +41,28 @@ class RaidDetailsView extends OverlayView
                 <div class="loot-amount">
                     <img src="images/coins.svg" alt=""><span class="count">0</span>
                 </div>
-                <ul class="loot">...</ul>
+                <div class="loot">...</div>
                 <button class="cancel-loot">Discard loot and Cancel Raid</button>
                 <button class="save-loot">Save Loot</button>
             </div>
         </div>
     """
     ui:
-        loot: '.loot'
         lootCount: '.loot-amount .count'
 
     events:
         'click .cancel-loot': '_endRaid'
         'click .save-loot': '_endRaid'
 
+    regions:
+        lootRegion: '.loot'
+
     onShow: ->
         console.log "Started Raid: ", @model
         @listenTo @model, 'new:loot', @_handleUpdates
         console.log "Listening for Raid Loot Updates..."
+        @lootCollection = new MagnetCollection()
+        @lootRegion.show( new MagnetCollectionView( collection: @lootCollection ) )
 
     _endRaid: ->
         @model.close()
@@ -63,6 +70,5 @@ class RaidDetailsView extends OverlayView
 
     _handleUpdates: (updates) ->
         console.log "Raid loot updates from model:", updates
-        @ui.loot.html('')
-        @ui.loot.append( $('<li/>').html( update.uri ) ) for update in updates
-        @ui.lootCount.text( updates.length )
+        @lootCollection.add( new Magnet.fromUri(update.uri) ) for update in updates
+        @ui.lootCount.text( @lootCollection.length )

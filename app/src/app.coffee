@@ -1,17 +1,17 @@
 fs = require 'fs'
 WebTorrent = require 'webtorrent'
 
-
 {_, $, Backbone, Marionette, nw, win, localStorage } = require './common.coffee'
+
+CONFIG = require( './models/Config.coffee')
+{ MagnetCollection, Magnet } = require './models/models.coffee'
+Store = require './models/PersistantModel.coffee'
+
 { AppView } = require './views/AppView.coffee'
 { LoadingView } = require './views/LoadingView.coffee'
 { IntroView } = require './views/IntroView.coffee'
 { ContentsView } = require './views/ContentsView.coffee'
 
-
-
-{ MagnetCollection, Magnet } = require './models/models.coffee'
-Store = require './models/PersistantModel.coffee'
 
 window.app = app = {}
 
@@ -24,7 +24,6 @@ nativeMenuBar = new nw.Menu( type: "menubar" )
 nativeMenuBar.createMacBuiltin("Pirate Chest") if process.platform is 'darwin'
 win.menu = nativeMenuBar;
 
-CONFIG = require( '../config.json')
 console.log 'CONFIG: ', CONFIG
 
 if CONFIG?.flags?.clearLocalStorageOnStartup
@@ -37,7 +36,10 @@ app.client = client = new WebTorrent
     tracker: CONFIG?.flags?.runTracker
 
 client.on 'error', (error) ->
-    console.error "Webtorrent Error:", error
+    console.error "WEBTORRENT ERR: #{ error.msg or error.toString?() or JOSN.stringify( error ) }"
+
+client.on 'torrent', (torrent) ->
+    console.log "WEBTORRENT: #{ torrent.name or torrent.infoHash }"
 
 
 window.app.magnetCollection = magnetCollection =  new MagnetCollection [],

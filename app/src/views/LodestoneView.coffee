@@ -29,19 +29,19 @@ class module.exports.LodestoneView extends Marionette.LayoutView
 		searchesRegion: '.searches'
 		output: '.output'
 
-	initialize: ({@torrentClient, config}) ->
+	initialize: ({@torrentClient, @config, collection}) ->
 		console.log "INIT LodestoneView", @torrentClient
-		@lodestone = window.lodestone = new Lodestone() if config?.flags?.connectLodestoneOnStartup
+		@lodestone = window.lodestone = new Lodestone( {data: {}, seeds: @config?.customSeeds } ) if config?.flags?.connectLodestoneOnStartup
 		
 
 	onShow: ->
-		@lodestone ?= window.lodestone = new Lodestone()	
+		@lodestone ?= window.lodestone = new Lodestone( {data: {}, seeds: @config?.customSeeds } )	
 		@listenTo @lodestone, 'peer', @_handleAddPeer
 		@listenTo @lodestone, 'data', @_handleData
 
-		@collection = new MagnetCollection([], { @torrentClient } )
-		@collectionView = new MagnetCollectionView( collection: @collection )
-		@output.show( @collectionView )
+		@searchResults = new MagnetCollection([], { @torrentClient } )
+		@resultsView = new MagnetCollectionView( collection: @searchResults )
+		@output.show( @resultsView )
 
 		@searches = new Backbone.Collection()
 		@searchesRegion.show( new LodestoneSearchCollectionView( collection: @searches ) )
@@ -73,10 +73,13 @@ class LodestoneEmptyView extends Marionette.ItemView
 class LodestoneSearchView extends Marionette.ItemView
 	className: 'lodestone-search-view'
 	template: _.template """
-		<div class="search">adlahsdlashdaslda <i class="icon-remove remove-search"></i></div>
+		<% for (var tag in tags) { %><span class="tag"><%- tags[tag] %></span><% } %><i class="icon-remove remove-search"></i>
 	"""
 	events:
 		'click .remove-search': '_handleRemoveSearch'
+
+	templateHelpers: =>
+		tags: @model.get( 'input' ).split( /\W+/ )
 
 	_handleRemoveSearch: ->
 		@model.destroy()

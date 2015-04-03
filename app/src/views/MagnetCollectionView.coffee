@@ -5,11 +5,13 @@
 class MagnetView extends Marionette.ItemView
     className: 'magnet-view'
     template: _.template """
-        <i data-title="More Infomation" class="details icon-collapse"></i>
-        <span class="title"><%- dn || infoHash %></span>
-        <i data-title="Toggle Favorite" class="icon-heart<%= favorite ? '' : '-empty' %> favorite <%= favorite ? 'fav' : '' %>"></i>
-        <i data-title="Torrent Status" class="status icon-circle <%- status ? 'ok' : '' %>"></i>
-        <a href="<%- uri %>"><i data-title="Magnet Link" class="icon-magnet"></i></a>
+        <div class="magnet-view-inner">
+            <i data-title="More Infomation" class="details icon-collapse"></i>
+            <span class="title"><%- dn || infoHash %></span>
+            <i data-title="Toggle Favorite" class="icon-heart<%= favorite ? '' : '-empty' %> favorite <%= favorite ? 'fav' : '' %>"></i>
+            <i data-title="Torrent Status" class="status icon-circle <%- status ? 'ok' : '' %>"></i>
+            <a class="magnet-link" href="<%- uri %>"><i data-title="Magnet Link" class="icon-magnet"></i></a>
+        </div>
     """
     events:
         'click a': 'handleMagnetClick'

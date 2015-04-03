@@ -25,21 +25,19 @@ class module.exports.AppView extends Marionette.LayoutView
         body: '.body-region'
         overlay: '.overlay'
 
-    initialize: ({@collection, config, @torrentClient}) ->
+    initialize: ({collection, config, torrentClient}) ->
+        @collection = collection
+        @config = config
+        @torrentClient = torrentClient
+
         @defaultItem = config?.defaultView
         @menuView = new MenuView( { @defaultItem } )
         
         @views = {}
-        @views['collection'] = new BodyView
-            collection: @collection
-
-        @views['search'] = new LodestoneView
-            collection: @collection
-            torrentClient: @torrentClient
-            config: config
-
+        @views['collection'] = new BodyView( {collection } )
+        @views['search'] = new LodestoneView( {config, collection, torrentClient} )
         @views['cards'] = new CardsView()
-        @views['settings'] = new SettingsView()
+        @views['settings'] = new SettingsView( {config} )
         @views['raids'] = new RaidsView()
 
     onShow: ->

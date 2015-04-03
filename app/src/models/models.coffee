@@ -50,13 +50,13 @@ class Magnet extends Backbone.Model
             dn: torrent.dn or false
             tr: torrent.tr
 
-    @fromUri: (uri) ->
+    @fromUri: (uri) =>
         torrent = null
         try
             torrent = parseTorrent( uri )
         catch err
             console.error "Unable to parse magnet uri: ", uri
-            return new Magnet( infoHash: uri )
+            return undefined
         @fromTorrent( torrent )
 
 
@@ -73,7 +73,7 @@ class MagnetCollection extends Backbone.Collection
         @store.sync( method, model, options ) if @store
 
     getTorrentData: (model) =>
-        console.log @torrentClient, model
+        return unless @torrentClient
         torrent = @torrentClient.get( model.get('infoHash') )
         unless torrent
             torrent = @torrentClient.add( model.getUri(), model.updateMetadata )

@@ -12,6 +12,7 @@
   "main": "app://piratechest/index.html",
   "single-instance": false,
   "dom_storage_quota": 1024,
+  "user-agent": "PirateChest v0.0.1 (POC)",
   "window": {
     "show": false,
     "title": "piratechest",
@@ -27,6 +28,7 @@
     "always-on-top": false,
     "fullscreen": false
   },
+  "chromium-args": "--dns-server='8.8.8.8' --incognito --wait-for-debugger --activate-on-launch",
   "dependencies": {
     "backbone": "^1.1.2",
     "backbone.marionette": "^2.4.1",
