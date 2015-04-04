@@ -3,7 +3,7 @@
 class module.exports.DetailsView extends Marionette.ItemView
     className: 'details-view'
     template: _.template """
-    	<div class="overlay">
+        <div class="overlay">
             <div class="content">
             <div class="close">
                 <i class="icon-remove"></i>
@@ -14,6 +14,14 @@ class module.exports.DetailsView extends Marionette.ItemView
                 <li><strong>Info Hash:</strong> <%- infoHash %></li>
                 <li><strong>Favorite:</strong> <%- favorite %></li>
                 <li><strong>Status:</strong> <%- status ? 'ok' : 'unknown' %></li>
+                <li>
+                    <strong>Trackers:</strong>
+                    <ol>
+                        <% for ( t in tr ) { %>
+                            <li><%- tr[t] %></li>
+                        <% } %>
+                    </ol>
+                </li>
                 <li><strong>Peers:</strong> <%- peers %></li>
                 <li>
                     <a class="uri" href="<%- uri %>"><%- uri %></a>
@@ -21,7 +29,7 @@ class module.exports.DetailsView extends Marionette.ItemView
                 <li>
                     <strong>Tags:</strong>
                     <ol>
-                        <% var tags = allTags(); for ( tag in tags ) { %>
+                        <%for ( tag in tags ) { %>
                             <li><%- tags[tag] %></li>
                         <% } %>
                     </ol>
@@ -30,13 +38,17 @@ class module.exports.DetailsView extends Marionette.ItemView
         </div></div>
     """
     events:
-    	'click .close': 'handleClose'
+        'click .close': 'handleClose'
 
-    templateHelpers: ->
-        allTags: ->
-            tags = @tags.concat( @dn?.split?( /\W+/ ) or [] )
-            console.log "tags:", tags
-            tags            
+    serializeData: ->
+        uri: @model.getUri()
+        tags: @model.getTags()
+        infoHash: @model.get('infoHash')
+        dn: @model.get('dn')
+        tr: @model.get('tr')
+        favorite: @model.get('favorite')
+        status: @model.get('status')
+        peers: @model.get('peers')
 
     initialize: ->
         @listenTo @model, 'change', @render
@@ -45,8 +57,8 @@ class module.exports.DetailsView extends Marionette.ItemView
         console.log( "Showing details for: ", @model)
         @model.torrent?.discovery.tracker.scrape()
         @model.torrent?.discovery.tracker.on 'scrape', (data) =>
-            console.log "Got Screape event for torrent, ", @model.torrent
-            console.log data
+            console.log "Got Scrape event for torrent: #{ @model.torrent.infoHash }"
+            @model.set('peers', data.complete )
 
     handleClose: ->
-    	@trigger( 'close' )
+        @trigger( 'close' )

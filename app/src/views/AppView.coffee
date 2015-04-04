@@ -11,6 +11,9 @@
 { BodyView } = require './BodyView.coffee'
 { RaidsView } = require './RaidsView.coffee'
 
+Logger = require '../models/Logger.coffee'
+log = new Logger()
+
 class module.exports.AppView extends Marionette.LayoutView
     className: 'app-view'
     template: _.template """
@@ -49,9 +52,9 @@ class module.exports.AppView extends Marionette.LayoutView
     _handleShowMenuItem: (item) ->
         view = @views[item]
         @listenTo view, 'show:overlay', @showOverlay
-        console.log "AppView: showing #{ item } view.", view    
+        log.info "AppView: showing #{ item } view.", view    
         @body.show( view, preventDestroy: true )
 
     showOverlay: (view) ->
-        console.log "Showing overlay: ", view
+        log.info "Showing overlay: ", view
         @overlay.show( view )

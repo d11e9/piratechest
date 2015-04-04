@@ -1,5 +1,5 @@
 {_, $, Backbone, Marionette, nw } = require( '../common.coffee' )
-{ Card, CardCollection } = require '../models/models.coffee'
+{ Card, CardCollection } = require '../models/Card.coffee'
 { OverlayView } = require './OverlayView.coffee'
 
 class module.exports.CardsView extends Marionette.LayoutView

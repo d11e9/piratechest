@@ -4,8 +4,11 @@ file = require 'file'
 {_, $, Backbone, Marionette, win, nw } = require( '../common.coffee' )
 
 { MagnetCollectionView  } = require './MagnetCollectionView.coffee'
-{ Magnet } = require '../models/models.coffee'
+{ Magnet } = require '../models/Magnet.coffee'
 { DetailsView  } = require './DetailsView.coffee'
+
+Logger = require '../models/Logger.coffee'
+log = new Logger()
 
 class module.exports.BodyView extends Marionette.LayoutView
     className: 'body-view'
@@ -46,26 +49,23 @@ class module.exports.BodyView extends Marionette.LayoutView
         clipboard = nw.Clipboard.get()
         contents = clipboard.get('text')
         magnet = Magnet.fromUri( contents )
-        @collection.add( magnet ) if magnet
+        @collection.create( magnet ) if magnet
 
     _handleImportFolder: (ev) ->
         path = @ui.dirInput?.get(0)?.files[0]?.path
-        console.log "Importing torrents from: ", path
+        log.info "Importing torrents from: ", path
         collection = @collection
         file.walk path, (err, dirPath, dirs, files) ->
             return if err
             for file in files
-                console.log "Checking file: ", file
+                log.info "Checking file: ", file
                 if /\.torrent$/.test( file )
-                    console.log "Found .torrent. "
+                    log.info "Found .torrent. "
                     torrent = readTorrent file, (err, torrent) ->
                         return if err
-                        console.log "Read torrent successfully: ", torrent
+                        log.info "Read torrent successfully: ", torrent
                         magnet = Magnet.fromTorrent( torrent )
                         collection.add( magnet )
-
-
-
 
     _handleAddMagnet: (ev) ->
         ev.preventDefault()

@@ -1,6 +1,9 @@
 {_, $, Backbone, Marionette, nw } = require( '../common.coffee' )
 { Raid } = require '../models/Raid.coffee'
-{ Magnet, MagnetCollection } = require '../models/models.coffee'
+{ Magnet } = require '../models/Magnet.coffee'
+{ MagnetCollection } = require '../models/MagnetCollection.coffee'
+Logger = require '../models/Logger.coffee'
+log = new Logger()
 
 { OverlayView } = require './OverlayView.coffee'
 { MagnetCollectionView  } = require './MagnetCollectionView.coffee'
@@ -58,17 +61,17 @@ class RaidDetailsView extends OverlayView
         lootRegion: '.loot'
 
     onShow: ->
-        console.log "Started Raid: ", @model
+        log.info "Started Raid: ", @model
         @listenTo @model, 'new:loot', @_handleUpdates
-        console.log "Listening for Raid Loot Updates..."
+        log.info "Listening for Raid Loot Updates..."
         @lootCollection = new MagnetCollection()
         @lootRegion.show( new MagnetCollectionView( collection: @lootCollection ) )
 
     _endRaid: ->
         @model.close()
-        @destroy()        
+        @destroy()
 
     _handleUpdates: (updates) ->
-        console.log "Raid loot updates from model:", updates
+        log.info "Raid loot updates from model:", updates
         @lootCollection.add( new Magnet.fromUri(update.uri) ) for update in updates
         @ui.lootCount.text( @lootCollection.length )
