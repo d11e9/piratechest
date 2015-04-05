@@ -14,19 +14,26 @@ class module.exports.MagnetCollection extends Backbone.Collection
 
     _handleAdd: (model, collection, options) ->
         log.info "_handleAdd", model.toJSON()
-        collection.getTorrentData(model)
+        #collection._getTorrentData(model)
 
     sync: (method, model, options) ->
         @store.sync( method, model, options ) if @store
 
-    getTorrentData: (model) =>
+    _getTorrentData: (model) =>
         return unless @torrentClient
-        torrent = @torrentClient.get( model.get('infoHash') )
-        unless torrent
-            torrent = @torrentClient.add( model.getUri(), model.updateMetadata )
-        else
-            model.updateMetadata( torrent )
+        return if model.get('dn')
 
+        torrent = @torrentClient.get( model.get('infoHash') )
+        if !torrent
+            torrent = @torrentClient.add( model.getUri(), @_recieveTorrentData(model) )
+        else
+            @_recieveTorrentData( model )(torrent)
+
+    _recieveTorrentData: (model) ->
+        (torrent) ->
+            model.updateMetadata(torrent) unless model.get( 'dn' )
+            torrent.destroy()
+        
     add: (model) =>
         log.info "Adding to MagnetCollection", model
         hash = model.get?( 'infoHash')
@@ -42,7 +49,7 @@ class module.exports.MagnetCollection extends Backbone.Collection
         log.info( "Added magnet id a DUPE? #{ isDupe }" )
         return false if isDupe
 
-        @getTorrentData( model )
+        @_getTorrentData( model )
 
         # Up to you either return false or throw an exception or silently ignore
         # NOTE: DEFAULT functionality of adding duplicate to collection is to IGNORE and RETURN. Returning false here is unexpected. ALSO, this doesn't support the merge: true flag.
