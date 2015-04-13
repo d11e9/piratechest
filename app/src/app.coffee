@@ -73,14 +73,19 @@ window.app.magnetCollection = magnetCollection =  new MagnetCollection [],
     store: new Store('magnets')
 
 lodestone = window.lodestone = new Lodestone
+    options:
+        id: client.peerIdHex
+        transport:
+            port: client.torrentPort - 1337
+            host: 'localhost'
     data: {}
     seeds: CONFIG?.customSeeds
 
 if CONFIG?.flags?.loadFromDatastore
     magnetCollection.fetch()
 
-# if CONFIG?.flags?.connectLodestoneOnStartup
-#     lodestone.start()
+if CONFIG?.flags?.connectLodestoneOnStartup
+    lodestone.start()
 
 if CONFIG?.flags?.getPeersFromSeed
     # Use The Map, to find bootstrap/seed peers.

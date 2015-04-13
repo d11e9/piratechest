@@ -1,5 +1,5 @@
 {_, $, Backbone, Marionette, win, nw } = require( '../common.coffee' )
-
+{ PeerGraph } = require './PeerGraph.coffee' 
 
 class module.exports.SettingsView extends Marionette.LayoutView
     className: 'settings-view'
@@ -11,15 +11,27 @@ class module.exports.SettingsView extends Marionette.LayoutView
             <div>
                 <div class="localstorage">LocalStorage: <a href="#">Clear All</a></div>
             </div>
+            <p class="local-node">Local node:
+                <span class="local-id">???</span>@
+                <span class="local-host">???</span>:
+                <span class="local-port">???</span>
+            </p>
             <h3>Seeds</h3>
             <div class="seeds"></div>
             <h3>Peers</h3>
             <div class="peers"></div>
+            <div class="graph"></div>
         </div>
     """
+    ui:
+        localId: '.local-id'
+        localHost: '.local-host'
+        localPort: '.local-port'
+
     regions:
         peers: '.peers'
         seeds: '.seeds'
+        graph: '.graph'
 
     events:
         'click a': 'openLink'
@@ -36,6 +48,11 @@ class module.exports.SettingsView extends Marionette.LayoutView
         @_handlePeerChanges()
         @_handleSetSeeds()
         @lodestone.ping()
+
+        @ui.localId.text( @lodestone.gossip.localPeer.id )
+        @ui.localHost.text( @lodestone.gossip.localPeer.transport.host )
+        @ui.localPort.text( @lodestone.gossip.localPeer.transport.port )
+
 
     onClose: ->
         @lodestone.off 'update-peers', @_handlePeerChanges
@@ -64,6 +81,10 @@ class module.exports.SettingsView extends Marionette.LayoutView
                 host: peer.transport.host
                 port: peer.transport.port
                 live: false
+
+        @graph.show new PeerGraph
+            nodes: @peerCollection.map (p) -> { name: p.get('id'), group: 1 }
+            links: [ { source: 0, target: 1, value: 1 } ]
 
 
     openLink: (ev) ->
