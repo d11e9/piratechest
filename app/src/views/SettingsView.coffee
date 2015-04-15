@@ -12,9 +12,7 @@ class module.exports.SettingsView extends Marionette.LayoutView
                 <div class="localstorage">LocalStorage: <a href="#">Clear All</a></div>
             </div>
             <p class="local-node">Local node:
-                <span class="local-id">???</span>@
-                <span class="local-host">???</span>:
-                <span class="local-port">???</span>
+                <span class="local-id">???</span>@<span class="local-host">???</span>:<span class="local-port">???</span>
             </p>
             <h3>Seeds</h3>
             <div class="seeds"></div>
@@ -82,9 +80,33 @@ class module.exports.SettingsView extends Marionette.LayoutView
                 port: peer.transport.port
                 live: false
 
-        @graph.show new PeerGraph
-            nodes: @peerCollection.map (p) -> { name: p.get('id'), group: 1 }
-            links: [ { source: 0, target: 1, value: 1 } ]
+        if @peerCollection.length > 0
+
+            # # peersPeers = {}
+            # # @peerCollection.each (p) ->
+            # #     peersPeers[key] = { name: key, group: 2 } for key, value in p.data?.graph?[0]
+
+            # # peerLinks = @peerCollection.map (p) ->
+            # #     { source: p.id, target: key, value: 1 } for key, value in p.data?.graph?[0]
+
+            console.log @lodestone.gossip.localPeer.data.graph[0]
+            nodes = [{ name: @lodestone.gossip.localPeer.id, group: 0 }]
+            links = []
+            decend = (sourceIndex, input, depth) ->
+                for own key, value of input
+                    index = _.findIndex(nodes, (n) -> n.name is key )
+                    nodes.push { name: key, group: depth } if index is -1
+                    index = _.findIndex(nodes, (n) -> n.name is key )
+                    links.push { source: sourceIndex, target: index }
+                    decend( index, value, depth++ )
+
+            decend( 0, @lodestone.gossip.localPeer.data.graph[0], 1 )
+
+            console.log nodes, links
+
+            @graph.show new PeerGraph
+                nodes: nodes
+                links: links
 
 
     openLink: (ev) ->

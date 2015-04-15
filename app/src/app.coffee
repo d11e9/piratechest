@@ -72,11 +72,15 @@ window.app.magnetCollection = magnetCollection =  new MagnetCollection [],
     torrentClient: client
     store: new Store('magnets')
 
+
+
+rand = (min,max) -> Math.floor(Math.random() * (max - min + 1)) + min
 lodestone = window.lodestone = new Lodestone
     options:
+        DEAD_PEER_PHI: 1
         id: client.peerIdHex
         transport:
-            port: client.torrentPort - 1337
+            port: (client.torrentPort or rand( 9002, 10000) ) - 1337
             host: 'localhost'
     data: {}
     seeds: CONFIG?.customSeeds
