@@ -2,8 +2,6 @@ fs = require 'fs'
 path = require 'path'
 WebTorrent = require 'webtorrent'
 
-Lodestone = require( './lib/lodestone')
-
 {_, $, Backbone, Marionette, nw, win, localStorage } = require './common.coffee'
 Logger = require './models/Logger.coffee'
 log = new Logger( verbose: true )
