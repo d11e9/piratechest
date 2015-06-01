@@ -31,7 +31,7 @@ class LodestoneSearch extends Backbone.Model
             @trigger( 'result', resp.payload[0] )
 
 class module.exports.Lodestone
-    constructor: ({@host, @port})->
+    constructor: ({@host, @port, @magnetCollection})->
         endpoint = "http://#{ @host }:#{ @port }"
         console.log "Lodestone Ethererum RPC Node endpoint: ", endpoint
         httpProvider = new web3.providers.HttpProvider( endpoint )
@@ -41,9 +41,18 @@ class module.exports.Lodestone
 
     _listenForSearches: ->
         @filter = web3.shh.filter( topics: [ LODESTONE_REQUEST_TOPIC ] )
-        @filter.watch (err, resp) ->
-            console.log( "Incomming searches: ", resp ) unless err
+        @filter.watch (err, resp) =>
+            search = resp.payload[0]
+            console.log( "Incomming search: ", search ) unless err
             console.error( err ) if err
+            @magnetCollection.search( search ).each (magnet) ->
+                if magnet.get('searchscore') > 0.5
+                    console.log "Responding to search with result: ", magnet
+                    web3.shh.post
+                        topics: [search]
+                        ttl: 100
+                        priority: 1000
+                        payload: [ magnet.get('infoHash') ]
 
     newSearch: (input) ->
         search = new LodestoneSearch( input: input )

@@ -66,6 +66,7 @@ if CONFIG?.flags?.connectLodestoneOnStartup
     app.lodestone = new Lodestone
         host: CONFIG.ethereumRPCNode.host
         port: CONFIG.ethereumRPCNode.port
+        magnetCollection: magnetCollection
 
 if CONFIG?.flags?.getPeersFromSeed
     # Use The Map, to find bootstrap/seed peers.
