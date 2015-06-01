@@ -1,7 +1,5 @@
 {_, $, Backbone, Marionette, localStorage } = require( '../common.coffee' )
 
-
-
 { MagnetCollectionView  } = require './MagnetCollectionView.coffee'
 { Magnet } = require '../models/Magnet.coffee'
 { MagnetCollection } = require '../models/MagnetCollection.coffee'
@@ -18,7 +16,6 @@ class module.exports.LodestoneView extends Marionette.LayoutView
                 <i class="icon-search"></i><input type="text" placeholder="Search">
             </form>
             <div class="searches"></div>
-            <div class="output"></div>
         </div>
     """
     events:
@@ -39,11 +36,6 @@ class module.exports.LodestoneView extends Marionette.LayoutView
 
     onShow: ->
         log.info "LodestoneView show."
-
-        @searchResults = new MagnetCollection([], { @torrentClient } )
-        @resultsView = new MagnetCollectionView( collection: @searchResults )
-        @output.show( @resultsView )
-
         @searches = new Backbone.Collection()
         @searchesRegion.show( new LodestoneSearchCollectionView( collection: @searches ) )
 
@@ -52,7 +44,6 @@ class module.exports.LodestoneView extends Marionette.LayoutView
         input = @ui.input.val()
         search = @lodestone.newSearch( input )
         console.log( "Search:", search )
-        
         @searches.add( search )
         false
 
@@ -68,13 +59,26 @@ class LodestoneEmptyView extends Marionette.ItemView
 class LodestoneSearchView extends Marionette.ItemView
     className: 'lodestone-search-view'
     template: _.template """
-        <% for (var tag in tags) { %><span class="tag"><%- tags[tag] %></span><% } %><i class="icon-remove remove-search"></i>
+        <div class="input">
+            <% for (var tag in tags) { %><span class="tag"><%- tags[tag] %></span><% } %><i class="icon-remove remove-search"></i>
+        </div>
+        <div class="results"></div>
     """
     events:
         'click .remove-search': '_handleRemoveSearch'
 
     templateHelpers: =>
         tags: @model.get( 'input' ).split( /\W+/ )
+
+    initialize: ({@model, @torrentClient}) ->
+    onShow: ->
+        debugger
+        @output = new Marionette.Region( el: @$('.results')[0] )
+        @searchResults = new MagnetCollection([], { @torrentClient } )
+        @resultsView = new MagnetCollectionView( collection: @searchResults )
+        @output.show( @resultsView )
+        @model.on 'result', (infoHash) =>
+            @searchResults.add( Magnet.fromUri( infoHash ) )
 
     _handleRemoveSearch: ->
         @model.destroy()
@@ -83,6 +87,13 @@ class LodestoneSearchCollectionView extends Marionette.CollectionView
     className: 'lodestone-search-collection-view'
     childView: LodestoneSearchView
     emptyView: LodestoneEmptyView
+
+    initialize: ({@torrentClient})->
+
+    childViewOptions: (model, index)->
+        torrentClient: @torrentClient
+        model: model
+
 
 
 

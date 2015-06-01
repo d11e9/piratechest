@@ -28,6 +28,7 @@ class LodestoneSearch extends Backbone.Model
             @filter.stopListening()
         else
             console.log( resp )
+            @trigger( 'result', resp.payload[0] )
 
 class module.exports.Lodestone
     constructor: ({@host, @port})->
