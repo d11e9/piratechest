@@ -72,7 +72,6 @@ class LodestoneSearchView extends Marionette.ItemView
 
     initialize: ({@model, @torrentClient}) ->
     onShow: ->
-        debugger
         @output = new Marionette.Region( el: @$('.results')[0] )
         @searchResults = new MagnetCollection([], { @torrentClient } )
         @resultsView = new MagnetCollectionView( collection: @searchResults )
