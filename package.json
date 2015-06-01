@@ -1,6 +1,6 @@
 {
   "name": "PirateChest",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "Peer to peer magnet discovery",
   "repository": {
     "type": "git",

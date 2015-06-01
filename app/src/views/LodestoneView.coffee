@@ -5,6 +5,8 @@
 { MagnetCollectionView  } = require './MagnetCollectionView.coffee'
 { Magnet } = require '../models/Magnet.coffee'
 { MagnetCollection } = require '../models/MagnetCollection.coffee'
+
+
 Logger = require '../models/Logger.coffee'
 log = new Logger( verbose: false )
 
@@ -32,8 +34,8 @@ class module.exports.LodestoneView extends Marionette.LayoutView
         searchesRegion: '.searches'
         output: '.output'
 
-    initialize: ({@torrentClient, @config, collection}) ->
-        log.info "LodestoneView init.", @torrentClient
+    initialize: ({@torrentClient, @config, collection, @lodestone}) ->
+        log.info "LodestoneView init.", @torrentClient, @lodestone
 
     onShow: ->
         log.info "LodestoneView show."
@@ -45,22 +47,15 @@ class module.exports.LodestoneView extends Marionette.LayoutView
         @searches = new Backbone.Collection()
         @searchesRegion.show( new LodestoneSearchCollectionView( collection: @searches ) )
 
-    _collectionToData: (collection) ->
-        data = {}
-        collection.each (model) -> data[ model.get 'infoHash' ] = model.getTags()
-        data
-
     _handleSearch: (ev) ->
         ev.preventDefault()
         input = @ui.input.val()
-        search = new Backbone.Model( input: input )
+        search = @lodestone.newSearch( input )
+        console.log( "Search:", search )
+        
         @searches.add( search )
         false
 
-    _handleData: (data) =>
-        for infoHash in data.hashes
-            magnet = new Magnet( infoHash: infoHash )
-            @searchResults.add( magnet )
 
 
 class LodestoneEmptyView extends Marionette.ItemView
