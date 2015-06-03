@@ -1,8 +1,15 @@
 {_, $, Backbone, Marionette, nw } = require( '../common.coffee' )
 
 web3 = require 'web3'
+path = require 'path'
+process = require 'child_process'
+
+Logger = require './Logger.coffee'
+log = new Logger( verbose: true )
 
 LODESTONE_REQUEST_TOPIC = "lodestone_search"
+
+LOCAL_GETH_OPTIONS = ['--shh','--networkid','123456','--rpc','console']
 
 
 class LodestoneSearch extends Backbone.Model
@@ -27,27 +34,57 @@ class LodestoneSearch extends Backbone.Model
         if err
             @filter.stopListening()
         else
-            console.log( resp )
+            log.info( resp )
             @trigger( 'result', resp.payload[0] )
 
 class module.exports.Lodestone
-    constructor: ({@host, @port, @magnetCollection})->
+    constructor: ({@host, @port, @magnetCollection}) ->
         endpoint = "http://#{ @host }:#{ @port }"
-        console.log "Lodestone Ethererum RPC Node endpoint: ", endpoint
-        httpProvider = new web3.providers.HttpProvider( endpoint )
-        web3.setProvider( httpProvider )
+        log.info "Lodestone Ethererum RPC Node endpoint: ", endpoint
+        try
+            httpProvider = new web3.providers.HttpProvider( endpoint )
+            web3.setProvider( httpProvider )
+            web3.eth.blockNumber # to test
+            @_setup()
+        catch error
+            log.error "LODESTONE: Failed to connect to Ethereum RPC node.", error
+            log.info "LODESTONE: starting local geth instance..."
+            @_runLocalGeth()
+            
+    _runLocalGeth: ->
+        connected = false
+        binPath = path.join( __dirname , "../../bin/geth.exe" )
+        log.info binPath
+        @geth = process.spawn( binPath, LOCAL_GETH_OPTIONS )
+        log.info @geth
+        @geth.stderr.on 'data', (d) =>
+            log.info "LODESTONE: Geth: ", d.toString()
+            unless connected
+                try
+                    httpProvider = new web3.providers.HttpProvider( "http://localhost:8545" )
+                    web3.setProvider( httpProvider )
+                    web3.eth.blockNumber
+                    connected = true
+                    @_setup()
+                catch e
+                    log.error "LODESTONE: Error: ", e
+        @geth.stdout.on 'data', (d) -> log.info( "LODESTONE Geth: ", d.toString() )
+        @geth.on 'close', (code) -> log.error( "LODESTONE: Geth Process Exited with code: ", code)
+
+    _setup: ->
         @searches = []
         @_listenForSearches()
+        @isReady = true
 
     _listenForSearches: ->
         @filter = web3.shh.filter( topics: [ LODESTONE_REQUEST_TOPIC ] )
         @filter.watch (err, resp) =>
             search = resp.payload[0]
-            console.log( "Incomming search: ", search ) unless err
-            console.error( err ) if err
+            log.info( "Incomming search: ", search ) unless err
+            log.error( err ) if err
             @magnetCollection.search( search ).each (magnet) ->
                 if magnet.get('searchscore') > 0.5
-                    console.log "Responding to search with result: ", magnet
+                    log.info "Responding to search with result: ", magnet
                     web3.shh.post
                         topics: [search]
                         ttl: 100
@@ -61,5 +98,17 @@ class module.exports.Lodestone
 
     stopSearches: ->
         search.filter.stopListening() for search in @searches
+
+    ready: (cb) =>
+        wait = =>
+            setTimeout (=>
+                log.info "LODESTONE: Waiting..."
+                if @isReady
+                    log.info "LODESTONE: Ready"
+                    cb()
+                else
+                    wait()
+            ), 100
+        wait()
 
 

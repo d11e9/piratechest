@@ -35,9 +35,12 @@ class module.exports.LodestoneView extends Marionette.LayoutView
         log.info "LodestoneView init.", @torrentClient, @lodestone
 
     onShow: ->
+        @$el.hide()
         log.info "LodestoneView show."
-        @searches = new Backbone.Collection()
-        @searchesRegion.show( new LodestoneSearchCollectionView( collection: @searches ) )
+        @lodestone.ready =>
+            @$el.show()
+            @searches = new Backbone.Collection()
+            @searchesRegion.show( new LodestoneSearchCollectionView( collection: @searches ) )
 
     _handleSearch: (ev) ->
         ev.preventDefault()

@@ -3,6 +3,8 @@ path = require 'path'
 WebTorrent = require 'webtorrent'
 web3 = require 'web3'
 
+
+
 {_, $, Backbone, Marionette, nw, win, localStorage } = require './common.coffee'
 Logger = require './models/Logger.coffee'
 log = new Logger( verbose: true )
@@ -67,6 +69,10 @@ if CONFIG?.flags?.connectLodestoneOnStartup
         host: CONFIG.ethereumRPCNode.host
         port: CONFIG.ethereumRPCNode.port
         magnetCollection: magnetCollection
+    
+
+
+
 
 if CONFIG?.flags?.getPeersFromSeed
     # Use The Map, to find bootstrap/seed peers.
