@@ -9,7 +9,9 @@ module.exports = function(grunt) {
         mac: true,
         win: true,
         macIcns: 'app/images/logo.icns',
-        winIco: 'app/images/logo.ico',
+        // commented out as it fails on osx,
+        // uncomment to build with icon on win
+        // winIco: 'app/images/logo.ico',
         linux32: true,
         linux64: true
       },
