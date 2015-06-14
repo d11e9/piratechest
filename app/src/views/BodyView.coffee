@@ -76,6 +76,9 @@ class module.exports.BodyView extends Marionette.LayoutView
         @ui.input.val( '' )
 
     _handleShowDetails: (magnet) ->
+        @$el.addClass('details-showing')
         detailsView = new DetailsView( model: magnet )
         @details.show( detailsView )
-        detailsView.on 'close', => @details.empty()
+        detailsView.on 'close', =>
+            @$el.removeClass('details-showing')
+            @details.empty()

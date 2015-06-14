@@ -15,11 +15,13 @@ class MagnetView extends Marionette.ItemView
             <i data-title="Toggle Favorite" class="icon-heart<%= favorite ? '' : '-empty' %> favorite <%= favorite ? 'fav' : '' %>"></i>
             <i data-title="Torrent Status" class="status icon-circle <%- status ? 'ok' : '' %>"></i>
             <a class="magnet-link" href="<%- uri %>"><i data-title="Magnet Link" class="icon-magnet"></i></a>
+            <i class="save icon-collapse"></i>
         </div>
     """
     events:
         'click a': 'handleMagnetClick'
         'click .favorite': 'toggleFav'
+        'click .save': 'handleSave'
         'click .title': 'handleShowDetails'
         'click .details': 'handleShowDetails'
 
@@ -40,6 +42,9 @@ class MagnetView extends Marionette.ItemView
         nw.Shell.openExternal( @model.getUri() )
         false
 
+    handleSave: ->
+        @trigger('save:magnet', @model )
+
     handleShowDetails: ->
         @trigger( 'show:details', @model )
 
@@ -47,6 +52,11 @@ class module.exports.MagnetCollectionView extends Marionette.CollectionView
     childView: MagnetView
     childEvents:
         'show:details': 'handleShowDetails'
+        'save:magnet': 'handleSaveMagnet'
 
     handleShowDetails: (view, magnet) ->
         @trigger( 'show:details', magnet )
+
+    handleSaveMagnet: (view, magnet)->
+        log.info "SAVE magnet: #{ magnet.get('infoHash') }"
+        @trigger( 'save:magnet', magnet )

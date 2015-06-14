@@ -3,25 +3,32 @@
 
 
 .settings-view {
-	padding: 5em;
-	text-align: center;
+    padding: 5em;
+    text-align: center;
 
-	.content {
-		max-width: 40em;
-		margin: 0 auto;
+    .content {
+        max-width: 40em;
+        margin: 0 auto;
 
-		img {
-			width: 20em;
-			margin-bottom: 1em;
-		}
-	}
+        img {
+            width: 20em;
+            margin-bottom: 1em;
+        }
+    }
 
+    table.flags {
+        max-width: 25em;
+        margin: 2em auto;
+        text-align: center;
+        display: block;
 
-	.peer-view {
-		i { font-size: 10px; }
+        td:first-child {
+            text-align: right;
+        }
+        td:last-child {
+            text-align: left;
+            font-weight: bold;
+        }
 
-		&.live {
-			i { color: green; }
-		}
-	}
+    }
 }

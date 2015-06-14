@@ -38,11 +38,31 @@
 		}
 	}
 
+
+
 	.magnets-region {
 		position: absolute;
 		overflow: auto;
-		width: 100%;
+		left: 0;
 		top: 3em;
 		bottom: 0;
+		width: 100%;
+		right: 0;	
 	}
+
+	&.details-showing {
+		.magnet-region {
+			width: 100%;
+			right: 0;
+
+			@media (max-width:@small-screen-break-point) {
+				right: 30em;
+				width: auto;
+			}
+		}
+
+	}
+
+
+
 }

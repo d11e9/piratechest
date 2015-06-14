@@ -4,9 +4,8 @@
 	.magnet-view-inner {
 		padding: 1em;
 		cursor: pointer;
-		max-width: 33em;
 		height: 1em;
-		overflow: visible;
+		overflow: hidden;
 		display: block;
 	}
 
@@ -59,7 +58,11 @@
 		width: 26em;
 	}
 
-	.status, .favorite, .magnet-link {
+	.status, .favorite, .magnet-link, .save {
 		float: right;
+	}
+
+	.save {
+		display: none;
 	}
 }

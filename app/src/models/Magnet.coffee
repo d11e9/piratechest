@@ -5,7 +5,7 @@ magnetUri = require( 'magnet-uri' )
 parseTorrent = require( 'parse-torrent' )
 
 Logger = require './Logger.coffee'
-log = new Logger( verbose: false )
+log = new Logger( verbose: true )
 
 class module.exports.Magnet extends Backbone.Model
 

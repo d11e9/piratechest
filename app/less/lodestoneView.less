@@ -7,7 +7,7 @@
 
 	.search {
 		text-align: left;
-		margin-bottom: 3em;
+		margin-bottom: 1em;
 
 		i {
 			line-height: 1.5em;
@@ -20,17 +20,36 @@
 	}
 
 	.lodestone-search-view {
-		.tag {
-			margin-right: 0.4em;
-			padding: 0.4em;
-			background-color: rgba( 0,0,0,0.5 );
-			color: @text-selected-color;
-			border-radius: 3px;
+
+		.input {
+			padding: 1em;
+
+			i {
+				cursor: pointer;
+			}
+
+			.tag {
+				margin-right: 0.4em;
+				padding: 0.4em;
+				background-color: rgba( 0,0,0,0.5 );
+				color: @text-selected-color;
+				border-radius: 3px;
+			}
 		}
 
-		i {
-			cursor: pointer;
+		.results {
+			.magnet-view {
+				.details,
+				.favorite,
+				.magnet-link { display: none; }
+
+				.save {
+					display: inherit;
+				}
+			}
 		}
+
+		
 	}
 
 	.lodestone-empty-view {

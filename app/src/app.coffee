@@ -7,7 +7,7 @@ web3 = require 'web3'
 
 {_, $, Backbone, Marionette, nw, win, localStorage } = require './common.coffee'
 Logger = require './models/Logger.coffee'
-log = new Logger( verbose: true )
+log = new Logger( verbose: false )
 
 nw.App.setCrashDumpDir("logs")
 
@@ -63,17 +63,15 @@ window.app.magnetCollection = magnetCollection =  new MagnetCollection [],
 if CONFIG?.flags?.loadFromDatastore
     magnetCollection.fetch()
 
-if CONFIG?.flags?.connectLodestoneOnStartup
-    window.web3 = web3
-    app.lodestone = new Lodestone
-        host: CONFIG.ethereumRPCNode.host
-        port: CONFIG.ethereumRPCNode.port
-        magnetCollection: magnetCollection
+window.web3 = web3
+app.lodestone = new Lodestone
+    connect: CONFIG?.flags?.connectLodestoneOnStartup
+    host: CONFIG.ethereumRPCNode.host
+    port: CONFIG.ethereumRPCNode.port
+    magnetCollection: magnetCollection
+    localNode: CONFIG?.flags?.runLocalEthereumNodeIfRequired
+
     
-
-
-
-
 if CONFIG?.flags?.getPeersFromSeed
     # Use The Map, to find bootstrap/seed peers.
     client.seed "#{ __dirname }/../images/map.svg", { name: 'PiratechestSeedMap.svg', comment: 'This map is designed to be seeded as a torrent by the piratechest application in order to bootstrap peer discovery.' }, (torrent) ->

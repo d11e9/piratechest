@@ -10,6 +10,16 @@ class module.exports.SettingsView extends Marionette.LayoutView
             <div>
                 <div class="localstorage">LocalStorage: <a href="#">Clear All</a></div>
             </div>
+
+            <table class="flags">
+                <% for (var flag in config.flags ) { %>
+                    <tr>
+                        <td><%- flag %></td>
+                        <td> : </td>
+                        <td><%- config.flags[flag] %></td>
+                    </tr>
+                <% } %>
+            </table>
         </div>
     """
 
@@ -18,6 +28,9 @@ class module.exports.SettingsView extends Marionette.LayoutView
         'click .localstorage a': '_handleClearLocalStorage'
 
     initialize: ({@config, @torrrentClient}) ->
+
+    serializeData: ->
+        config: @config
 
     _handleClearLocalStorage: ->
         confirm = window.confirm "Are you sure you want to clear your localStorage?"

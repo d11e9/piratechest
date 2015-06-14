@@ -6,7 +6,7 @@
 
 
 Logger = require '../models/Logger.coffee'
-log = new Logger( verbose: false )
+log = new Logger( verbose: true )
 
 class module.exports.LodestoneView extends Marionette.LayoutView
     className: 'lodestone-view'
@@ -37,10 +37,16 @@ class module.exports.LodestoneView extends Marionette.LayoutView
     onShow: ->
         @$el.hide()
         log.info "LodestoneView show."
-        @lodestone.ready =>
-            @$el.show()
-            @searches = new Backbone.Collection()
-            @searchesRegion.show( new LodestoneSearchCollectionView( collection: @searches ) )
+        @lodestone.ready (err, res) =>
+            if err
+                window.alert( "Failed to connect to an Ethereum node." )
+            else 
+                @$el.show()
+                @searches = new Backbone.Collection()
+                @searchesRegion.show new LodestoneSearchCollectionView
+                    collection: @searches
+                    torrentClient: @torrentClient
+                    magnetCollection: @collection
 
     _handleSearch: (ev) ->
         ev.preventDefault()
@@ -73,14 +79,26 @@ class LodestoneSearchView extends Marionette.ItemView
     templateHelpers: =>
         tags: @model.get( 'input' ).split( /\W+/ )
 
-    initialize: ({@model, @torrentClient}) ->
+    initialize: ({@model, @torrentClient, @magnetCollection}) ->
+        log.info "LodestoneSearchView args: ", arguments
+
     onShow: ->
         @output = new Marionette.Region( el: @$('.results')[0] )
         @searchResults = new MagnetCollection([], { @torrentClient } )
         @resultsView = new MagnetCollectionView( collection: @searchResults )
+        @resultsView.on 'save:magnet', @_handleMagnetSave
+        log.info "Lodestone collection", @torrentClient, @searchResults
         @output.show( @resultsView )
-        @model.on 'result', (infoHash) =>
-            @searchResults.add( Magnet.fromUri( infoHash ) )
+        @model.on 'result', @_handleSearchresult
+
+    _handleSearchresult: (infoHash) =>
+        magnet = Magnet.fromUri( infoHash )
+        log.info "Recived search result: ", magnet
+        @searchResults.add( magnet )
+
+    _handleMagnetSave: (magnet) =>
+        log.info "Saving magnet to your magnetCollection", magnet
+        @magnetCollection.add( magnet )
 
     _handleRemoveSearch: ->
         @model.destroy()
@@ -90,10 +108,11 @@ class LodestoneSearchCollectionView extends Marionette.CollectionView
     childView: LodestoneSearchView
     emptyView: LodestoneEmptyView
 
-    initialize: ({@torrentClient})->
+    initialize: ({@torrentClient, @magnetCollection })->
 
-    childViewOptions: (model, index)->
+    childViewOptions: (model, index) ->
         torrentClient: @torrentClient
+        magnetCollection: @magnetCollection
         model: model
 
 

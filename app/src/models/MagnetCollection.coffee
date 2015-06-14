@@ -4,7 +4,7 @@ parseTorrent = require( 'parse-torrent' )
 
 { Magnet } = require './Magnet.coffee'
 Logger = require './Logger.coffee'
-log = new Logger( verbose: false )
+log = new Logger( verbose: true )
 
 class module.exports.MagnetCollection extends Backbone.Collection
 
@@ -14,7 +14,7 @@ class module.exports.MagnetCollection extends Backbone.Collection
 
     _handleAdd: (model, collection, options) ->
         log.info "_handleAdd", model.toJSON()
-        #collection._getTorrentData(model)
+        collection._getTorrentData(model)
 
     sync: (method, model, options) ->
         @store.sync( method, model, options ) if @store
@@ -25,14 +25,17 @@ class module.exports.MagnetCollection extends Backbone.Collection
 
         torrent = @torrentClient.get( model.get('infoHash') )
         if !torrent
+            log.info "torrent not yet in registered by client, adding.", model
             torrent = @torrentClient.add( model.getUri(), @_recieveTorrentData(model) )
         else
+            log.info "torrent already in registered by client.", torrent
             @_recieveTorrentData( model )(torrent)
 
     _recieveTorrentData: (model) ->
         (torrent) ->
-            model.updateMetadata(torrent) unless model.get( 'dn' )
-            torrent.destroy()
+            log.info "Received torrent metadata for #{ model.get('infoHash') }", torrent
+            model.updateMetadata(torrent)
+            #torrent.destroy()
         
     add: (model) =>
         log.info "Adding to MagnetCollection", model

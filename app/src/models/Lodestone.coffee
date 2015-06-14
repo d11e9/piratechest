@@ -5,10 +5,10 @@ path = require 'path'
 process = require 'child_process'
 
 Logger = require './Logger.coffee'
-log = new Logger( verbose: true )
+log = new Logger( verbose: false )
 
 LODESTONE_REQUEST_TOPIC = "lodestone_search"
-
+LODESTONE_LOAD_TIMEOUT = 10 * 1000
 LOCAL_GETH_OPTIONS = ['--shh','--networkid','123456','--rpc','console']
 
 
@@ -38,9 +38,10 @@ class LodestoneSearch extends Backbone.Model
             @trigger( 'result', resp.payload[0] )
 
 class module.exports.Lodestone
-    constructor: ({@host, @port, @magnetCollection}) ->
+    constructor: ({@host, @port, @magnetCollection, @localNode, connect}) ->
         endpoint = "http://#{ @host }:#{ @port }"
         log.info "Lodestone Ethererum RPC Node endpoint: ", endpoint
+        return unless connect
         try
             httpProvider = new web3.providers.HttpProvider( endpoint )
             web3.setProvider( httpProvider )
@@ -48,11 +49,11 @@ class module.exports.Lodestone
             @_setup()
         catch error
             log.error "LODESTONE: Failed to connect to Ethereum RPC node.", error
-            log.info "LODESTONE: starting local geth instance..."
-            @_runLocalGeth()
+            @_runLocalGeth() if @localNode
             
     _runLocalGeth: ->
         connected = false
+        log.info "LODESTONE: starting local geth instance..."
         binPath = path.join( __dirname , "../../bin/geth.exe" )
         log.info binPath
         @geth = process.spawn( binPath, LOCAL_GETH_OPTIONS )
@@ -100,15 +101,20 @@ class module.exports.Lodestone
         search.filter.stopListening() for search in @searches
 
     ready: (cb) =>
+        interval = 100
+        timeout = 0
         wait = =>
+            timeout += interval
             setTimeout (=>
                 log.info "LODESTONE: Waiting..."
                 if @isReady
                     log.info "LODESTONE: Ready"
-                    cb()
+                    cb(null, 200)
+                else if timeout >= LODESTONE_LOAD_TIMEOUT
+                    cb( new Error("Lodestone load timeout exceeded!"), 500 )
                 else
                     wait()
-            ), 100
+            ), interval
         wait()
 
 
