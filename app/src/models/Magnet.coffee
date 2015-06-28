@@ -9,57 +9,53 @@ log = new Logger( verbose: true )
 
 class module.exports.Magnet extends Backbone.Model
 
-    initialize: ({infoHash, favorite, dn, tr, tags}) ->
+    initialize: ({infoHash, favorite, dn}) ->
         log.info "Creating Magnet:", arguments
-        @set 'infoHash', infoHash
-        @set 'favorite', if favorite then true else undefined
-        @set 'status', undefined
-        @set 'dn', dn or undefined
-        @set 'tr', tr or []
-        @set 'peers', 0
-        @set 'tags', []
-        log.info "Created Magnet: ", @toJSON()
-        @listenTo @, 'change', -> @save()
+        @set( 'id', infoHash )
+        @set( 'infoHash', infoHash )
+        @set( 'favorite', favorite )
+        @set( 'dn', dn )
+        @torrent = window.app.client.add( @get('id'), verify: true )
+        @listenTo( @torrent, 'metadata', @_updateMetadata )
+        @listenTo( @torrent.swarm, 'wire', @_updateStatus )
+        @listenTo( this, 'change:dn change:favorite', @save )
+        @torrent.swarm.pause() if @get('dn')
+        @download = false
 
-    getUri: ->
-        trackers = @get( 'tr' ) or []
-        base = "magnet:?"
-        base += "xt=urn:btih:#{ @get( 'infoHash' ) }"
-        if @get( 'dn' )
-            base += "&dn=#{ window.encodeURIComponent( @get( 'dn' ) ) }"
-        if trackers
-            for i, val in trackers
-                base += "&tr=#{ window.encodeURIComponent( val ) }"
-        base
+    togglePauseResume: =>
+        if @torrent.swarm._paused
+            console.log( "Resuming" )
+            @download = true
+            @torrent.swarm.resume()
+        else
+            @download = false
+            console.log( "Pausing" )
+            @torrent.swarm.pause()
+        @trigger('updateStatus')
 
     sync: (method, model, options) ->
         @collection?.store.sync( method, model, options ) if @collection?.store
 
-    getTags: ->
-        name = @get( 'dn' )
-        tags = @get( 'tags' )
-        tags.concat( name?.split?( /\W+/ ) or [] )
+    _updateStatus: =>
+        #log.info "Swarm wire event:", @torrent
 
-    updateMetadata: (torrent) =>
-        @torrent ?= torrent
-        log.info "Updating Magnet from torrent metadata:", torrent
-        @set( 'dn', torrent.dn or torrent.name or @get( 'dn' ) or undefined )
-        @set( 'peers', torrent?.swarm?.numPeers or 0 )
-        @set( 'tr', torrent.tr )
-        @set( 'status', true )
-        log.info('updated magnet', @, torrent)
+        @trigger('updateStatus')
+
+    _updateMetadata: =>
+        @set( 'dn', @torrent.name ) unless @get( 'dn' )
+        log.info "Updating Magnet from torrent metadata:", @torrent
+
         # FIXME: Destroying this torrent as soon as we have metadata
         # this may not be the best way to prevent downloading
         # when all we want is the metadata (by default at least)
-        # @torrent.swarm?.pause?()
-        # torrent.swarm?.pause?()
+        # @torrent.swarm?.pause?()        
+        @torrent.swarm.pause() unless @download
+
 
     @fromTorrent: (torrent) ->
         log.info "Magnet from torrent: ", torrent
         new Magnet
             infoHash: torrent.infoHash
-            dn: torrent.dn or torrent.name or undefined
-            tr: torrent.tr
 
     @fromUri: (uri) =>
         log.info "Magnet from uri: ", uri

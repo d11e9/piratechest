@@ -12,31 +12,12 @@ class module.exports.MagnetCollection extends Backbone.Collection
     initialize: (models, {@torrentClient, @store} = {}) ->
         @listenTo @, 'add', @_handleAdd
 
-    _handleAdd: (model, collection, options) ->
-        log.info "_handleAdd", model.toJSON()
-        collection._getTorrentData(model)
-
     sync: (method, model, options) ->
         @store.sync( method, model, options ) if @store
 
-    _getTorrentData: (model) =>
-        return unless @torrentClient
-        return if model.get('dn')
+    comparator: (model) ->
+        return model.get('dn')
 
-        torrent = @torrentClient.get( model.get('infoHash') )
-        if !torrent
-            log.info "torrent not yet in registered by client, adding.", model
-            torrent = @torrentClient.add( model.getUri(), @_recieveTorrentData(model) )
-        else
-            log.info "torrent already in registered by client.", torrent
-            @_recieveTorrentData( model )(torrent)
-
-    _recieveTorrentData: (model) ->
-        (torrent) ->
-            log.info "Received torrent metadata for #{ model.get('infoHash') }", torrent
-            model.updateMetadata(torrent)
-            #torrent.destroy()
-        
     add: (model) =>
         log.info "Adding to MagnetCollection", model
         hash = model.get?( 'infoHash')
@@ -52,7 +33,6 @@ class module.exports.MagnetCollection extends Backbone.Collection
         log.info( "Added magnet id a DUPE? #{ isDupe }" )
         return false if isDupe
 
-        @_getTorrentData( model )
 
         # Up to you either return false or throw an exception or silently ignore
         # NOTE: DEFAULT functionality of adding duplicate to collection is to IGNORE and RETURN. Returning false here is unexpected. ALSO, this doesn't support the merge: true flag.

@@ -5,8 +5,8 @@
 		padding: 1em;
 		cursor: pointer;
 		height: 1em;
-		overflow: hidden;
 		display: block;
+		position: relative;
 	}
 
 	&:hover {
@@ -36,33 +36,60 @@
 		color: inherit;
 	}
 
-	.favorite.fav {
-		color: red;
-	}
-
-	.status {
-		color: red;
-		&.ok { color: green; }
-	}
 
 
-	.details, .title {
-		float: left;
+	.progress {
+		position: absolute;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		background-color: rgba(55, 61, 107, 0.5);
 	}
 
 	.title {
+		position: absolute;
+		left: 1em;
+		right: 6em;
 		text-overflow: ellipsis;
-		overflow: hidden;
-		height: 1em;
 		white-space: nowrap;
-		width: 26em;
+		height: 1em;
+		box-sizing: border-box;
+		overflow: hidden;
+
+		&:after {
+			left: 0;
+			right: auto;
+		}
 	}
 
-	.status, .favorite, .magnet-link, .save {
-		float: right;
+	.actions {
+		position: absolute;
+		right: 0;
+		width: 5em;
+
+		.favorite.fav {
+			color: red;
+		}
+
+		.status {
+			color: @text-color;
+
+			&.green { color: green; }
+			&.red { color: red; }
+			&.orange { color: orange; }
+
+			&.icon-spinner:before {
+				-webkit-animation:spin 2s linear infinite;
+			}
+		}
+
+		.status, .favorite, .magnet-link, .save {
+			position: absolute;
+		}
+
+		.status { right: 1em; }
+		.magnet-link { right: 3em; }
+		.favorite { right: 5em; }
 	}
 
-	.save {
-		display: none;
-	}
 }

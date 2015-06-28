@@ -9,7 +9,7 @@ class module.exports.MenuView extends Marionette.LayoutView
         <div class="content">
             <ul>
                 <li data-item="collection"><i class="icon-magnet"></i><span>Magnet Collection</span></li>
-                <li data-item="cards"><i class="icon-tags"></i><span>Card Deck</span></li>
+                <!-- <li data-item="cards"><i class="icon-tags"></i><span>Card Deck</span></li> -->
                 <li data-item="search" class="search"><i class="icon-search"></i>
                     <span>Lodestone Search</span>
                 </li>

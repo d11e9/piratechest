@@ -2,7 +2,7 @@ Datastore = require 'nedb'
 path = require 'path'
 _ = require 'underscore'
 Logger = require './Logger.coffee'
-log = new Logger( verbose: false )
+log = new Logger( verbose: true )
 
 
 class Store

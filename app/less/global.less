@@ -28,7 +28,7 @@ a {
 		padding: 8px 12px;
 		color: black;
 		position: absolute;
-		left: 0;
+		right: 0;
 		bottom: 50%;
 		white-space: nowrap;
 		z-index: 20;
@@ -64,3 +64,6 @@ input {
         border-color: @text-color;
     }
 }
+
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }

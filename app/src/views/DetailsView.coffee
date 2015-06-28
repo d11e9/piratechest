@@ -10,45 +10,32 @@ class module.exports.DetailsView extends Marionette.ItemView
             </div>
             <p>Magnet Details</p>
             <ul>
+                <li class="pause-resume">Pause/Resume</li>
+                <li class="delete">Delete</li>
+            </ul>
+            <ul>
                 <li><strong>Title:</strong> <%- dn %></li>
                 <li><strong>Info Hash:</strong> <%- infoHash %></li>
                 <li><strong>Favorite:</strong> <%- favorite %></li>
-                <li><strong>Status:</strong> <%- status ? 'ok' : 'unknown' %></li>
-                <li>
-                    <strong>Trackers:</strong>
-                    <ol>
-                        <% for ( t in tr ) { %>
-                            <li><%- tr[t] %></li>
-                        <% } %>
-                    </ol>
-                </li>
-                <li><strong>Peers:</strong> <%- peers %></li>
+                <li><strong>Status:</strong> <%- status ? status : 'unknown' %></li>                
                 <li>
                     <a class="uri" href="<%- uri %>"><%- uri %></a>
                 </li>
-                <li>
-                    <strong>Tags:</strong>
-                    <ol>
-                        <%for ( tag in tags ) { %>
-                            <li><%- tags[tag] %></li>
-                        <% } %>
-                    </ol>
-                </li>
+                
             </ul>
         </div></div>
     """
     events:
         'click .close': 'handleClose'
+        'click .pause-resume': 'handlePauseResume'
+        'click .delete': '_deleteMagnet'
 
     serializeData: ->
-        uri: @model.getUri()
-        tags: @model.getTags()
+        uri: @model.torrent.magnetURI
         infoHash: @model.get('infoHash')
         dn: @model.get('dn')
-        tr: @model.get('tr')
         favorite: @model.get('favorite')
         status: @model.get('status')
-        peers: @model.get('peers')
 
     initialize: ->
         @listenTo @model, 'change', @render
@@ -66,8 +53,14 @@ class module.exports.DetailsView extends Marionette.ItemView
             @model.set('peers', data.complete )
 
     _deleteMagnet: =>
+        console.log( "Deleting magnet: ", @model)
+        @model.torrent.remove()
         @model.destroy()
         @handleClose()
+
+    handlePauseResume: ->
+        @model.togglePauseResume()
+        console.log( @model.torrent )
 
     handleClose: ->
         window.Mousetrap.reset()

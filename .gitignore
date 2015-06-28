@@ -3,3 +3,4 @@ dist
 cache
 *.db
 config.json
+app/data
